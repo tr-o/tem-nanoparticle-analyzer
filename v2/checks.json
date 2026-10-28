@@ -1,0 +1,10 @@
+{
+  "v1_synthetic_test_dice_mean": 0.9107980385498939,
+  "v2_synthetic_test_dice_mean": 0.9043305079597526,
+  "v1_synthetic_test_iou_mean": 0.8362627846989692,
+  "v2_synthetic_test_iou_mean": 0.8254280264779714,
+  "synthetic_test_images": 4,
+  "separate_real_gt": 0,
+  "touching_circles_split_test": "PASS",
+  "metadata_roi_test": "PASS"
+}
