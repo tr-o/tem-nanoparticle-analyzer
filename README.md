@@ -1,3 +1,13 @@
+# TEM Nanoparticle Analyzer — 最新解析レポート
+
+**[📊 図入り統合レポート：教師データ・Pt/Ag実測6枚・v1→v3比較・スケールバーOCR/検量](docs/RESEARCH_REPORT.md)**
+
+> 実画像での検証は探索的。教師データの一部は合成画像、実画像3枚は弱教師。OCRからのnm換算には保留判定があり、独立した人手正解との照合は未実施。
+
+[教師画像一覧](docs/TRAINING_DATA.md) / [スケールバー検量の詳細](v2/SCALE_CALIBRATION.md) / [実行手順](v2/README_GITHUB.md)
+
+---
+
 # TEM nanoparticle supervised segmentation prototype
 
 **教師あり学習 / Random Forest + multi-scale image features + marker-controlled watershed**
