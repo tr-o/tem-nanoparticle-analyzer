@@ -36,7 +36,9 @@
 
 ## 08 AuPt合金の複雑な形状
 
-[Scientific Reports 40103](https://www.nature.com/articles/srep40103) — 合金粒子の形状・凝集度。明視野TEM Figure 2参照。複合図の各パネルの意味に注意。
+![He et al. (2017), Scientific Reports, Figure 2, CC BY 4.0](../reference_tem/08_AuPt_srep40103_fig2.jpg)
+
+[Scientific Reports 40103](https://www.nature.com/articles/srep40103) — 合金粒子の形状・凝集度。明視野TEM Figure 2参照。複合図の各パネルの意味に注意。**Figure 2原画像をCC BY 4.0で保存**。He et al. (2017), DOI:10.1038/srep40103, Figure 2, © authors, CC BY 4.0; 第三者著作物クレジットがないことを確認。
 
 ## 09 Agの孤立粒子
 
