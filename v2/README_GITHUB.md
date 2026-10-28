@@ -41,7 +41,7 @@ Install optional OCR support: system `tesseract-ocr` plus `pip install pytessera
 ```bash
 # Original and analysis image must be exactly the same field of view; the program checks correlation.
 python v2/tem_v2.py predict --image analysis_500.png \
-  --scale-reference original_1000.png --model v2/model_rf_real_weak.joblib
+  --scale-reference original_1000.png --model v2/model_rf_real_weak_portable.joblib
 # For short bars: review scale_annotation.png and choose manual override only when justified.
 python v2/tem_v2.py predict --image image.png --nm-per-px 0.35
 python v2/app_v3.py
