@@ -1,0 +1,36 @@
+name: TEM v5 audit regression
+on:
+  push:
+    paths:
+      - 'v5/**'
+      - '.github/workflows/v5-audit-tests.yml'
+  pull_request:
+    paths:
+      - 'v5/**'
+      - '.github/workflows/v5-audit-tests.yml'
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install minimal audit dependencies
+        run: python -m pip install numpy pandas
+      - name: Run immutable-decision ledger tests
+        run: python -m unittest discover -s v5 -p 'test_review_workflow.py'
+      - name: Validate embedded images and local report links
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          src=Path('v5/REPORT.md')
+          txt=src.read_text(encoding='utf-8')
+          links=re.findall(r'!?\[[^]]*\]\(([^)]+)\)',txt)
+          local=[(src.parent / link) for link in links if not link.startswith(('https://','http://','#'))]
+          missing=[str(p) for p in local if not p.exists()]
+          assert not missing, f'Broken relative links: {missing}'
+          assert txt.count('![')>=4, 'Expected figures missing'
+          print(f'Validated {len(local)} GitHub-local links')
+          PY
