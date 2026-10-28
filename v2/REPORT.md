@@ -49,37 +49,37 @@ python v2/build_report.py
 
 ### Pt-1 | dense
 
-![Pt-1 | dense](results/web_image_2bed876c2a14_500/overview.png)
+![Pt-1 | dense](results/web_image_2bed876c2a14_500/overview.jpg)
 
 [Accepted CSV](results/web_image_2bed876c2a14_500/particles_accepted.csv) | [All candidates](results/web_image_2bed876c2a14_500/particles_all.csv)
 
 ### Pt-2 | medium
 
-![Pt-2 | medium](results/web_image_9828c4ba32bc_500/overview.png)
+![Pt-2 | medium](results/web_image_9828c4ba32bc_500/overview.jpg)
 
 [Accepted CSV](results/web_image_9828c4ba32bc_500/particles_accepted.csv) | [All candidates](results/web_image_9828c4ba32bc_500/particles_all.csv)
 
 ### Pt-3 | medium
 
-![Pt-3 | medium](results/web_image_6af295ebd363_500/overview.png)
+![Pt-3 | medium](results/web_image_6af295ebd363_500/overview.jpg)
 
 [Accepted CSV](results/web_image_6af295ebd363_500/particles_accepted.csv) | [All candidates](results/web_image_6af295ebd363_500/particles_all.csv)
 
 ### Ag-1 | isolated
 
-![Ag-1 | isolated](results/web_image_b9ecc5092cc1_500/overview.png)
+![Ag-1 | isolated](results/web_image_b9ecc5092cc1_500/overview.jpg)
 
 [Accepted CSV](results/web_image_b9ecc5092cc1_500/particles_accepted.csv) | [All candidates](results/web_image_b9ecc5092cc1_500/particles_all.csv)
 
 ### Ag-2 | noisy
 
-![Ag-2 | noisy](results/web_image_82853817b188_500/overview.png)
+![Ag-2 | noisy](results/web_image_82853817b188_500/overview.jpg)
 
 [Accepted CSV](results/web_image_82853817b188_500/particles_accepted.csv) | [All candidates](results/web_image_82853817b188_500/particles_all.csv)
 
 ### Ag-3 | sparse
 
-![Ag-3 | sparse](results/web_image_8222294b2379_500/overview.png)
+![Ag-3 | sparse](results/web_image_8222294b2379_500/overview.jpg)
 
 [Accepted CSV](results/web_image_8222294b2379_500/particles_accepted.csv) | [All candidates](results/web_image_8222294b2379_500/particles_all.csv)
 
