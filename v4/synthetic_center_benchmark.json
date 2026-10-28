@@ -1,0 +1,93 @@
+{
+  "method": "Hungarian center matching \u2264 max(4.5px,0.75 \u00d7 synthetic radius); synthetic ground truth only",
+  "results": [
+    {
+      "image": "test_00",
+      "n_gt": 82,
+      "v3": {
+        "tp": 38,
+        "fp": 0,
+        "fn": 44,
+        "precision": 1.0,
+        "recall": 0.4634146341463415
+      },
+      "v4": {
+        "tp": 36,
+        "fp": 0,
+        "fn": 46,
+        "precision": 1.0,
+        "recall": 0.43902439024390244
+      }
+    },
+    {
+      "image": "test_01",
+      "n_gt": 82,
+      "v3": {
+        "tp": 43,
+        "fp": 0,
+        "fn": 39,
+        "precision": 1.0,
+        "recall": 0.524390243902439
+      },
+      "v4": {
+        "tp": 44,
+        "fp": 0,
+        "fn": 38,
+        "precision": 1.0,
+        "recall": 0.5365853658536586
+      }
+    },
+    {
+      "image": "test_02",
+      "n_gt": 82,
+      "v3": {
+        "tp": 44,
+        "fp": 0,
+        "fn": 38,
+        "precision": 1.0,
+        "recall": 0.5365853658536586
+      },
+      "v4": {
+        "tp": 45,
+        "fp": 0,
+        "fn": 37,
+        "precision": 1.0,
+        "recall": 0.5487804878048781
+      }
+    },
+    {
+      "image": "test_03",
+      "n_gt": 82,
+      "v3": {
+        "tp": 46,
+        "fp": 0,
+        "fn": 36,
+        "precision": 1.0,
+        "recall": 0.5609756097560976
+      },
+      "v4": {
+        "tp": 47,
+        "fp": 0,
+        "fn": 35,
+        "precision": 1.0,
+        "recall": 0.573170731707317
+      }
+    }
+  ],
+  "aggregated": {
+    "v3": {
+      "tp": 171,
+      "fp": 0,
+      "fn": 157,
+      "precision": 1.0,
+      "recall": 0.5213414634146342
+    },
+    "v4": {
+      "tp": 172,
+      "fp": 0,
+      "fn": 156,
+      "precision": 1.0,
+      "recall": 0.524390243902439
+    }
+  }
+}
