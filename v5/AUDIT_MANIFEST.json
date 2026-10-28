@@ -1,0 +1,22 @@
+{
+  "source": "Pt-1 vendor TEM from nanoComposix, sourced indirectly via earlier v2 overview figure",
+  "source_url": "https://nanocomposix.com/products/5-nm-platinum-nanoparticles",
+  "image_input": "Reconstructed crop from already generated v2 overview, NOT original TEM/JPEG",
+  "image_sha256": "4933917cdf15a8f0f8aca743b88cebbd435fe446f75bcc777d46cb6dd754bf17",
+  "sampling_seed": 11129,
+  "spotcheck_n": 36,
+  "expert_ground_truth": false,
+  "reviewer": "AI assistant, visual auxiliary spot check",
+  "scale_accepted": false,
+  "v4_reconstructed_counts": {
+    "accepted": 205,
+    "review": 783,
+    "rejected": 63
+  },
+  "triage_review_counts": {
+    "high": 122,
+    "medium": 503,
+    "low": 158,
+    "reconsider_rejected": 10
+  }
+}
