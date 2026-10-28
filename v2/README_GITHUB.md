@@ -29,8 +29,26 @@ The external real source images are **not** assumed redistributable. If not stor
 - Severe Pt clustering causes conservative false rejections.
 - Data in nm require calibrated pixel size and no false precision should be inferred from vendor figure thumbnails.
 
-### Model weights and source-image availability
 
-The repository currently contains source code, weak annotation masks, annotated previews and test metrics, **not the 45-tree trained model weights nor the externally sourced original TEM images**. Run `python v2/tem_v2.py train` after providing the source images and regenerating pixel annotations. The companion downloadable demo ZIP supplied in the ChatGPT conversation includes the complete trained model for local inference. The GitHub visualizations were created with that full model; retrained predictions may differ.
+## v3: Scale-bar calibration and image exclusion
 
-The 15-tree portable approximation was tested separately but is not claimed equivalent to the full model.
+- `scale_calibration.py`: single-pass Tesseract OCR of nm labels, horizontal-bar/square detection, automatic mask of only the annotation, uncertainty-based acceptance, and full-resolution to resized-image field matching.
+- `tem_v2.py predict` automatically reports `calibration.json` and `scale_annotation.png`. Accepted calibrations add `diameter_nm`, `area_nm2` to the measurement CSV, and switch the histogram to nm. Failed/short bars do not silently apply physical units.
+- `app_v3.py`: Gradio GUI for uploading an analysis image and optional higher-resolution same-field reference image; optional manual nm/px override.
+
+Install optional OCR support: system `tesseract-ocr` plus `pip install pytesseract` (also `gradio pandas` for GUI).
+
+```bash
+# Original and analysis image must be exactly the same field of view; the program checks correlation.
+python v2/tem_v2.py predict --image analysis_500.png \
+  --scale-reference original_1000.png --model v2/model_rf_real_weak.joblib
+# For short bars: review scale_annotation.png and choose manual override only when justified.
+python v2/tem_v2.py predict --image image.png --nm-per-px 0.35
+python v2/app_v3.py
+```
+
+**Scope and limitations:** the automatic text-location strategy was evaluated on vendor images with bottom-right scale bars only; other formats, bars elsewhere, tilt/rotation, multi-panel figures, overlay graphics, and image crops may need a manual scale. For weakly resolved bars, apparent precision of nm/px is not an instrument uncertainty. Original microscopy calibration/metadata are preferable to OCR from publication figures. Do not assume a scale label is present for simulated training images.
+
+### Model distribution
+
+`v2/model_rf_real_weak_portable.joblib` is a reduced **15-tree** ExtraTrees model for easy checkout and GUI demonstration. The original 48-tree experimental model is not equivalent and has not been uploaded. All v3 preview inferences use the portable model. Training via `tem_v2.py train` creates a separate full model `v2/model_rf_real_weak.joblib` and requires real source images where licensing permits.
