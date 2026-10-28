@@ -40,6 +40,13 @@ for i,(name,label) in enumerate(images.items()):
         axs[i,j].set_title(['Original',f'v1 raw N={base["n_measured"]}',f'v2 kept={d["accepted"]+d["split_touching"]} / rejected={d["rejected"]}'][j],fontsize=10)
 fig.suptitle('TEM analysis: original vs v1 baseline vs v2 real weak supervision\nGreen: accepted, cyan: plausible contact split, red: discarded',fontsize=13)
 fig.tight_layout(rect=(0,0,1,.965));fig.savefig(V2/'comparison_6_images.jpg',dpi=145);plt.close(fig)
+# Write preview JPEGs for GitHub Markdown while retaining original full-res PNGs.
+for name in images:
+    src=resultdir/name/'overview.png'
+    dst=resultdir/name/'overview.jpg'
+    im=Image.open(src).convert('RGB'); im.thumbnail((1150,1800)); im.save(dst,quality=48,optimize=True)
+for src in (V2/'weak_labels').glob('*/label_preview.png'):
+    im=Image.open(src).convert('RGB'); im.save(src.with_suffix('.jpg'),quality=48,optimize=True)
 df=pd.DataFrame(rows);df.to_csv(V2/'comparison_counts.csv',index=False)
 header='''# Real TEM v2: supervised adaptation and conservative particle selection
 
@@ -88,6 +95,6 @@ python v2/build_report.py
 ## Detail pages
 '''
 for name,label in images.items():
-    header+=f'\n### {label}\n\n![{label}](results/{name}/overview.png)\n\n[Accepted CSV](results/{name}/particles_accepted.csv) | [All candidates](results/{name}/particles_all.csv)\n'
+    header+=f'\n### {label}\n\n![{label}](results/{name}/overview.jpg)\n\n[Accepted CSV](results/{name}/particles_accepted.csv) | [All candidates](results/{name}/particles_all.csv)\n'
 (V2/'REPORT.md').write_text(header,encoding='utf8')
 print(df.to_string(index=False));print('Saved',V2/'REPORT.md')
