@@ -1,0 +1,7 @@
+id,view,old_accept,new_accept,isolated,touching,resolved,review,reject,calibration,nm_per_px,diameter_nm,diameter_px
+web_image_2bed876c2a14_500,Pt-1: high density,34,192,110,3,79,916,74,review_required,,,6.864
+web_image_9828c4ba32bc_500,Pt-2: medium density,346,498,346,51,101,88,23,accepted,0.43478260869565216,3.832,8.813
+web_image_6af295ebd363_500,Pt-3: medium density,186,350,243,29,78,118,27,accepted,0.5,3.868,7.736
+web_image_b9ecc5092cc1_500,Ag-1: isolated,49,51,51,0,0,0,5,accepted,0.43478260869565216,11.358,26.124
+web_image_82853817b188_500,Ag-2: noisy background,5,6,6,0,0,1,3,accepted,0.23255813953488372,11.0195,47.385
+web_image_8222294b2379_500,Ag-3: slight contacts,12,13,8,5,0,0,2,accepted,0.43478260869565216,11.907,27.385
