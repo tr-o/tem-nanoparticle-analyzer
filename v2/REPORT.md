@@ -1,3 +1,5 @@
+[**最新版：統合画像レポート（v1〜v3.1）**](../docs/RESEARCH_REPORT.md)
+
 # Real TEM v2: supervised adaptation and conservative particle selection
 
 **Evaluation status: exploratory. No independent manual ground truth on six experimental TEM images.**
@@ -51,37 +53,37 @@ python v2/build_report.py
 
 ![Pt-1 | dense](results/web_image_2bed876c2a14_500/overview.jpg)
 
-[Accepted CSV](results/web_image_2bed876c2a14_500/particles_accepted.csv) | [All candidates](results/web_image_2bed876c2a14_500/particles_all.csv)
+粒子ごとのCSVはローカル推論実行時に生成（このGitHub版には同梱せず）。
 
 ### Pt-2 | medium
 
 ![Pt-2 | medium](results/web_image_9828c4ba32bc_500/overview.jpg)
 
-[Accepted CSV](results/web_image_9828c4ba32bc_500/particles_accepted.csv) | [All candidates](results/web_image_9828c4ba32bc_500/particles_all.csv)
+粒子ごとのCSVはローカル推論実行時に生成（このGitHub版には同梱せず）。
 
 ### Pt-3 | medium
 
 ![Pt-3 | medium](results/web_image_6af295ebd363_500/overview.jpg)
 
-[Accepted CSV](results/web_image_6af295ebd363_500/particles_accepted.csv) | [All candidates](results/web_image_6af295ebd363_500/particles_all.csv)
+粒子ごとのCSVはローカル推論実行時に生成（このGitHub版には同梱せず）。
 
 ### Ag-1 | isolated
 
 ![Ag-1 | isolated](results/web_image_b9ecc5092cc1_500/overview.jpg)
 
-[Accepted CSV](results/web_image_b9ecc5092cc1_500/particles_accepted.csv) | [All candidates](results/web_image_b9ecc5092cc1_500/particles_all.csv)
+粒子ごとのCSVはローカル推論実行時に生成（このGitHub版には同梱せず）。
 
 ### Ag-2 | noisy
 
 ![Ag-2 | noisy](results/web_image_82853817b188_500/overview.jpg)
 
-[Accepted CSV](results/web_image_82853817b188_500/particles_accepted.csv) | [All candidates](results/web_image_82853817b188_500/particles_all.csv)
+粒子ごとのCSVはローカル推論実行時に生成（このGitHub版には同梱せず）。
 
 ### Ag-3 | sparse
 
 ![Ag-3 | sparse](results/web_image_8222294b2379_500/overview.jpg)
 
-[Accepted CSV](results/web_image_8222294b2379_500/particles_accepted.csv) | [All candidates](results/web_image_8222294b2379_500/particles_all.csv)
+粒子ごとのCSVはローカル推論実行時に生成（このGitHub版には同梱せず）。
 
 ## Held-out synthetic validation (same simulated generator; four images)
 
