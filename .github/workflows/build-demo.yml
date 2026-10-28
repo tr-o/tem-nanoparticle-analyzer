@@ -1,0 +1,51 @@
+name: Reproduce and commit synthetic TEM dataset
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tem_particle_ml.py"
+      - "run_demo.py"
+      - "requirements.txt"
+      - "scripts/**"
+      - ".github/workflows/build-demo.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Generate all 16+4 synthetic images and masks, train RF, evaluate
+        run: python run_demo.py
+      - name: Build training / test contact sheets and analysis preview
+        run: python scripts/make_gallery.py
+      - name: Fetch explicitly licensed reference TEM figure
+        run: python scripts/fetch_open_images.py
+      - name: Save reproducible dataset, metrics, images and trained model
+        shell: bash
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add demo_data/ docs/*.jpg test_metrics.json results/ reference_tem/
+          git add -f trained_rf.joblib
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Record synthetic TEM training images, ground truth, model and evaluated examples [skip ci]"
+            git push origin HEAD:main
+          fi
