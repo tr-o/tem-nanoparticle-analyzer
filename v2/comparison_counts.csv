@@ -1,0 +1,7 @@
+image,subset,v1_raw,v2_raw,v2_accepted,v2_direct,v2_split,v2_rejected,v2_median_d_px
+Pt-1 | dense,unseen,588,459,40,36,4,419,7.047
+Pt-2 | medium,weak train,420,512,338,291,47,174,8.519
+Pt-3 | medium,unseen,309,379,193,166,27,186,7.818
+Ag-1 | isolated,weak train,56,56,50,50,0,6,26.523
+Ag-2 | noisy,weak train,1148,7,6,6,0,1,47.411500000000004
+Ag-3 | sparse,unseen,21,15,12,8,4,3,25.4105
