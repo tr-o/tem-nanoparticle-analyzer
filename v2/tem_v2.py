@@ -14,8 +14,11 @@ from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.metrics import f1_score,jaccard_score
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 from tem_particle_ml import read_gray,read_mask,feature_stack,normalize,predict_probability
+from scale_calibration import detect_scale,exclusion_mask,draw_scale_overlay,transfer_calibration
+from dataclasses import asdict
 
-MODEL=ROOT/'v2/model_rf_real_weak.joblib'
+TRAIN_MODEL=ROOT/'v2/model_rf_real_weak.joblib'
+MODEL=(ROOT/'v2/model_rf_real_weak_portable.joblib' if (ROOT/'v2/model_rf_real_weak_portable.joblib').exists() else TRAIN_MODEL)
 
 def train(seed=2026,trees=48):
     rng=np.random.default_rng(seed);xx=[];yy=[];ww=[]
@@ -39,10 +42,10 @@ def train(seed=2026,trees=48):
     X=np.vstack(xx); Y=np.concatenate(yy); W=np.concatenate(ww)
     clf=ExtraTreesClassifier(n_estimators=trees,max_depth=19,min_samples_leaf=3,max_features='sqrt',n_jobs=4,random_state=seed, class_weight='balanced')
     clf.fit(X,Y,sample_weight=W)
-    MODEL.parent.mkdir(parents=True,exist_ok=True)
+    TRAIN_MODEL.parent.mkdir(parents=True,exist_ok=True)
     joblib.dump({'clf':clf,'model':'extra-trees real weak + synthetic','n_source':len(src),
-                 'label_protocol':'white particle cores / black confident background / 128 unknown ignored'},MODEL,compress=3)
-    print('saved',MODEL, 'X',X.shape,'classes',np.bincount(Y),flush=True)
+                 'label_protocol':'white particle cores / black confident background / 128 unknown ignored'},TRAIN_MODEL,compress=3)
+    print('saved',TRAIN_MODEL, 'X',X.shape,'classes',np.bincount(Y),flush=True)
 
 def metadata_exclusion(shape):
     h,w=shape;m=np.zeros((h,w),bool)
@@ -97,13 +100,27 @@ def roi_stats(image,mask,forbidden):
                 intensity_median=round(inside,3),background_median=round(bg,3))
 
 def run(img_path,model_path=MODEL,outdir=None, threshold=.48, min_area=22, min_contrast=.095,
-        min_diameter=6, min_distance=7,nm_per_px=None):
+        min_diameter=6, min_distance=7,nm_per_px=None, auto_scale=True, confirm_short_bar=False,
+        scale_reference=None):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     img=read_gray(img_path);norm=normalize(img)
     prob=predict_probability(model_path,img)
-    excluded=metadata_exclusion(img.shape)
+    cal=detect_scale(scale_reference or img_path,confirm_short_bar=confirm_short_bar)
+    if scale_reference is not None:
+        cal=transfer_calibration(cal,scale_reference,img_path)
+    if nm_per_px is not None:
+        if nm_per_px<=0:raise ValueError('nm_per_px must be positive')
+        effective_nm_per_px=float(nm_per_px)
+        calibration_source='manual_override'
+    elif auto_scale and cal.status=='accepted':
+        effective_nm_per_px=cal.nm_per_px
+        calibration_source='ocr_and_bar'
+    else:
+        effective_nm_per_px=None
+        calibration_source='unavailable' if auto_scale else 'auto_disabled'
+    excluded=exclusion_mask(img.shape,cal)
     valid=~excluded
     labels,binary,parents,parent_map=split_candidates(prob,valid,min_area,threshold,min_distance)
     h,w=img.shape
@@ -151,13 +168,29 @@ def run(img_path,model_path=MODEL,outdir=None, threshold=.48, min_area=22, min_c
     with open(out/'particles_all.csv','w',newline='',encoding='utf8') as f:
         writer=csv.DictWriter(f,fieldnames=list(rows[0]) if rows else ['id','status']);writer.writeheader();writer.writerows(rows)
     acc=[r for r in rows if r['status']!='rejected']
-    if nm_per_px is not None:
-        for r in acc:r['diameter_nm']=round(r['diameter_px']*nm_per_px,3)
+    if effective_nm_per_px is not None:
+        for r in rows:
+            if r['status']!='rejected':
+                r['diameter_nm']=round(r['diameter_px']*effective_nm_per_px,3)
+                r['area_nm2']=round(r['area_px2']*effective_nm_per_px**2,3)
+            else:
+                r['diameter_nm']=''
+                r['area_nm2']=''
+    # Ensure consistent CSV header even when no accepted particles are present.
+    if effective_nm_per_px is not None:
+        cols=list(rows[0]) if rows else ['id','status','diameter_nm','area_nm2']
+        with open(out/'particles_all.csv','w',newline='',encoding='utf8') as f:
+            writer=csv.DictWriter(f,fieldnames=cols);writer.writeheader();writer.writerows(rows)
     with open(out/'particles_accepted.csv','w',newline='',encoding='utf8') as f:
         writer=csv.DictWriter(f,fieldnames=list(acc[0]) if acc else list(rows[0]) if rows else ['id','status']);writer.writeheader();writer.writerows(acc)
     cv2.imwrite(str(out/'overlay.png'),cv2.cvtColor(overlay,cv2.COLOR_RGB2BGR))
     cv2.imwrite(str(out/'probability.png'),np.uint8(prob*255))
     cv2.imwrite(str(out/'excluded_metadata.png'),np.uint8(excluded)*255)
+    cv2.imwrite(str(out/'scale_annotation.png'),draw_scale_overlay(img_path,cal))
+    calibration=asdict(cal)
+    calibration.update(effective_nm_per_px=effective_nm_per_px,calibration_source=calibration_source,
+                       image_shape_px=list(img.shape),scale_conversion_applied=effective_nm_per_px is not None)
+    (out/'calibration.json').write_text(json.dumps(calibration,indent=2,ensure_ascii=False),encoding='utf8')
     np.savez_compressed(out/'instances_accepted.npz', labels=labels_out)
     from matplotlib.patches import Patch
     fig,axs=plt.subplots(1,3,figsize=(14,4.8),gridspec_kw={'width_ratios':[1,1,1]})
@@ -165,9 +198,10 @@ def run(img_path,model_path=MODEL,outdir=None, threshold=.48, min_area=22, min_c
     axs[1].imshow(overlay);axs[1].axis('off');axs[1].set_title('Accepted / split / rejected')
     axs[1].legend(handles=[Patch(color=np.array(colors[s])/255,label=s) for s in colors],loc='lower left',fontsize=7,framealpha=.8)
     ds=[r['diameter_px'] for r in acc]
-    axs[2].hist(ds,bins=min(20,max(4,int(np.sqrt(len(ds))))) if ds else 4,edgecolor='white')
-    axs[2].set_xlabel('Equivalent diameter (pixel)');axs[2].set_ylabel('Accepted detections')
-    axs[2].set_title(f'N={len(acc)} | median={np.median(ds):.1f} px' if ds else 'No accepted particles')
+    display_ds=([r['diameter_nm'] for r in acc] if effective_nm_per_px is not None else ds)
+    axs[2].hist(display_ds,bins=min(20,max(4,int(np.sqrt(len(display_ds))))) if display_ds else 4,edgecolor='white')
+    axs[2].set_xlabel('Equivalent diameter (nm)' if effective_nm_per_px is not None else 'Equivalent diameter (pixel)');axs[2].set_ylabel('Accepted detections')
+    axs[2].set_title(f'N={len(acc)} | median={np.median(display_ds):.2f} '+('nm' if effective_nm_per_px is not None else 'px') if ds else 'No accepted particles')
     fig.suptitle(f'{Path(img_path).name}: v2 / real weak supervision',fontsize=12)
     fig.tight_layout();fig.savefig(out/'overview.png',dpi=140);plt.close(fig)
     result={ 'image':Path(img_path).name, 'model':str(model_path),'raw_instances':len(rows),
@@ -175,7 +209,10 @@ def run(img_path,model_path=MODEL,outdir=None, threshold=.48, min_area=22, min_c
              'split_touching':sum(r['status']=='split_touching' for r in rows),
              'rejected':sum(r['status']=='rejected' for r in rows),
              'median_diameter_px':float(np.median(ds)) if ds else None,
-             'nm_per_px':nm_per_px,'limitations':'No independent manual ground truth; flags do not prove optical overlaps.' }
+             'nm_per_px':effective_nm_per_px,'calibration_status':cal.status,
+             'calibration_source':calibration_source,
+             'median_diameter_nm':float(np.median(display_ds)) if ds and effective_nm_per_px is not None else None,
+             'limitations':'No independent manual ground truth; flags do not prove optical overlaps.' }
     (out/'summary.json').write_text(json.dumps(result,indent=2,ensure_ascii=False),encoding='utf-8')
     print(json.dumps(result,ensure_ascii=False),flush=True)
     return result
@@ -187,7 +224,12 @@ if __name__=='__main__':
     sub.add_argument('--out',default=None);sub.add_argument('--min-contrast',type=float,default=.095)
     sub.add_argument('--threshold',type=float,default=.48);sub.add_argument('--min-distance',type=int,default=7)
     sub.add_argument('--nm-per-px',type=float,default=None)
+    sub.add_argument('--disable-auto-scale',action='store_true')
+    sub.add_argument('--confirm-short-bar',action='store_true')
+    sub.add_argument('--scale-reference',default=None,help='Same original field at higher resolution for more accurate calibration')
     args=ap.parse_args()
     if args.command=='train':train(trees=args.trees)
     else:run(args.image,args.model,args.out,threshold=args.threshold,min_distance=args.min_distance,
-             min_contrast=args.min_contrast,nm_per_px=args.nm_per_px)
+             min_contrast=args.min_contrast,nm_per_px=args.nm_per_px,
+             auto_scale=not args.disable_auto_scale,confirm_short_bar=args.confirm_short_bar,
+             scale_reference=args.scale_reference)
