@@ -28,3 +28,9 @@ The external real source images are **not** assumed redistributable. If not stor
 - `split_touching` is a plausible instance separation, not proof of no projection overlap.
 - Severe Pt clustering causes conservative false rejections.
 - Data in nm require calibrated pixel size and no false precision should be inferred from vendor figure thumbnails.
+
+### Model weights and source-image availability
+
+The repository currently contains source code, weak annotation masks, annotated previews and test metrics, **not the 45-tree trained model weights nor the externally sourced original TEM images**. Run `python v2/tem_v2.py train` after providing the source images and regenerating pixel annotations. The companion downloadable demo ZIP supplied in the ChatGPT conversation includes the complete trained model for local inference. The GitHub visualizations were created with that full model; retrained predictions may differ.
+
+The 15-tree portable approximation was tested separately but is not claimed equivalent to the full model.
