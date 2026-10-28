@@ -24,15 +24,21 @@
 
 ## 05 担持Ptの複雑な背景
 
-[Scientific Reports 44411](https://www.nature.com/articles/srep44411) — 支持体の濃淡とPt粒子。本文のライセンス、個別図の第三者クレジットを確認すること。
+![担持PtのTEM・Scientific Reports 44411 Fig. 4（CC BY 4.0）](../reference_tem/05_Pt_supported_srep44411_fig4.jpg)
+
+[Scientific Reports 44411](https://www.nature.com/articles/srep44411) — 支持体の濃淡とPt粒子。原論文Figure 4、CC BY 4.0。**出典・権利はreference_tem/README.mdを参照。**
 
 ## 06 Pt/Cの凝集粒子
 
-[Membranes 12(3), 301](https://www.mdpi.com/2077-0375/12/3/301) — 支持膜/カーボンと粒子の識別。画像は記事の外部ページを参照。
+![Membranes 12(3), 301 Fig. 3（外部サイト画像）](https://www.mdpi.com/membranes/membranes-12-00301/article_deploy/html/images/membranes-12-00301-g003.png)
+
+[Membranes 12(3), 301](https://www.mdpi.com/2077-0375/12/3/301) — 支持膜/カーボンと粒子の識別。外部画像は参照元のアクセス制限により表示されない場合があります。
 
 ## 07 Pt/Cの微小粒子
 
-[Nanomaterials 12(21), 3800](https://www.mdpi.com/2079-4991/12/21/3800) — 微小粒子の検出漏れ評価。画像は記事の外部ページを参照。
+![Nanomaterials 12(21), 3800 Fig. 1（外部サイト画像）](https://www.mdpi.com/nanomaterials/nanomaterials-12-03800/article_deploy/html/images/nanomaterials-12-03800-g001.png)
+
+[Nanomaterials 12(21), 3800](https://www.mdpi.com/2079-4991/12/21/3800) — 微小粒子の検出漏れ評価。外部画像は参照元のアクセス制限により表示されない場合があります。
 
 ## 08 AuPt合金の複雑な形状
 
