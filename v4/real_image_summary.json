@@ -1,0 +1,127 @@
+[
+  {
+    "image": "web_image_2bed876c2a14_500.png",
+    "model": "model_rf_real_weak_portable.joblib",
+    "counts": {
+      "rejected": 74,
+      "review": 916,
+      "accepted_resolved": 79,
+      "accepted_isolated": 110,
+      "accepted_touching": 3
+    },
+    "total_candidates": 1182,
+    "estimated_isolated_diameter_px": 6.48,
+    "accepted": 192,
+    "review": 916,
+    "rejected": 74,
+    "recovered_candidates": 947,
+    "nm_per_px": null,
+    "scale_status": "review_required",
+    "median_diameter_nm": null,
+    "median_diameter_px": 6.864,
+    "notes": "Selection counts are not recall/precision; review candidates excluded from reported diameters. Weak real training labels include Ag-1, Ag-2, Pt-2."
+  },
+  {
+    "image": "web_image_9828c4ba32bc_500.png",
+    "model": "model_rf_real_weak_portable.joblib",
+    "counts": {
+      "review": 88,
+      "rejected": 23,
+      "accepted_touching": 51,
+      "accepted_isolated": 346,
+      "accepted_resolved": 101
+    },
+    "total_candidates": 609,
+    "estimated_isolated_diameter_px": 8.18,
+    "accepted": 498,
+    "review": 88,
+    "rejected": 23,
+    "recovered_candidates": 174,
+    "nm_per_px": 0.43478260869565216,
+    "scale_status": "accepted",
+    "median_diameter_nm": 3.832,
+    "median_diameter_px": 8.813,
+    "notes": "Selection counts are not recall/precision; review candidates excluded from reported diameters. Weak real training labels include Ag-1, Ag-2, Pt-2."
+  },
+  {
+    "image": "web_image_6af295ebd363_500.png",
+    "model": "model_rf_real_weak_portable.joblib",
+    "counts": {
+      "rejected": 27,
+      "accepted_isolated": 243,
+      "review": 118,
+      "accepted_touching": 29,
+      "accepted_resolved": 78
+    },
+    "total_candidates": 495,
+    "estimated_isolated_diameter_px": 7.31,
+    "accepted": 350,
+    "review": 118,
+    "rejected": 27,
+    "recovered_candidates": 161,
+    "nm_per_px": 0.5,
+    "scale_status": "accepted",
+    "median_diameter_nm": 3.868,
+    "median_diameter_px": 7.736,
+    "notes": "Selection counts are not recall/precision; review candidates excluded from reported diameters. Weak real training labels include Ag-1, Ag-2, Pt-2."
+  },
+  {
+    "image": "web_image_b9ecc5092cc1_500.png",
+    "model": "model_rf_real_weak_portable.joblib",
+    "counts": {
+      "rejected": 5,
+      "accepted_isolated": 51
+    },
+    "total_candidates": 56,
+    "estimated_isolated_diameter_px": 26.22,
+    "accepted": 51,
+    "review": 0,
+    "rejected": 5,
+    "recovered_candidates": 0,
+    "nm_per_px": 0.43478260869565216,
+    "scale_status": "accepted",
+    "median_diameter_nm": 11.358,
+    "median_diameter_px": 26.124,
+    "notes": "Selection counts are not recall/precision; review candidates excluded from reported diameters. Weak real training labels include Ag-1, Ag-2, Pt-2."
+  },
+  {
+    "image": "web_image_82853817b188_500.png",
+    "model": "model_rf_real_weak_portable.joblib",
+    "counts": {
+      "accepted_isolated": 6,
+      "rejected": 3,
+      "review": 1
+    },
+    "total_candidates": 10,
+    "estimated_isolated_diameter_px": 43.86,
+    "accepted": 6,
+    "review": 1,
+    "rejected": 3,
+    "recovered_candidates": 0,
+    "nm_per_px": 0.23255813953488372,
+    "scale_status": "accepted",
+    "median_diameter_nm": 11.0195,
+    "median_diameter_px": 47.385,
+    "notes": "Selection counts are not recall/precision; review candidates excluded from reported diameters. Weak real training labels include Ag-1, Ag-2, Pt-2."
+  },
+  {
+    "image": "web_image_8222294b2379_500.png",
+    "model": "model_rf_real_weak_portable.joblib",
+    "counts": {
+      "accepted_isolated": 8,
+      "accepted_touching": 5,
+      "rejected": 2
+    },
+    "total_candidates": 15,
+    "estimated_isolated_diameter_px": 21.88,
+    "accepted": 13,
+    "review": 0,
+    "rejected": 2,
+    "recovered_candidates": 0,
+    "nm_per_px": 0.43478260869565216,
+    "scale_status": "accepted",
+    "median_diameter_nm": 11.907,
+    "median_diameter_px": 27.385,
+    "notes": "Selection counts are not recall/precision; review candidates excluded from reported diameters. Weak real training labels include Ag-1, Ag-2, Pt-2."
+  }
+]
