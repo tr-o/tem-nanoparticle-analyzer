@@ -38,3 +38,19 @@ python -m unittest v2/test_scale_calibration.py
 ```
 
 Sources: [Pt nanoparticle TEM](https://nanocomposix.com/products/5-nm-platinum-nanoparticles), [Ag nanoparticle TEM](https://nanocomposix.com/products/10-nm-silver-nanospheres). Experimental source images are NOT relicensed by this project.
+
+## Calibrated instance analysis examples (15-tree portable model)
+
+The examples below use the original 1000×1000 images for calibration and analyze a resized 500×500 copy. The displayed counts are algorithmic detections, not externally validated precision or recall.
+
+### Pt semi-dense: 5 nm / 23 px (original)
+
+![Pt calibrated size distribution](results_v3/Pt_reference/overview.jpg)
+
+Accepted 283 isolated candidates and 63 split-touching candidates (median equivalent diameter **3.80 nm** for 346 accepted detections).
+
+### Ag isolated: 10 nm / 46 px (original)
+
+![Ag calibrated size distribution](results_v3/Ag_isolated/overview.jpg)
+
+Accepted 49 candidates with median equivalent diameter **11.40 nm**. This is exploratory and cannot substitute for hand-annotated ground truth.
