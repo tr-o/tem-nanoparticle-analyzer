@@ -1,6 +1,10 @@
-# TEM Nanoparticle Analyzer — 最新解析レポート
+# TEM Nanoparticle Analyzer — v4 画像付き検証結果
 
 **[📊 図入り統合レポート：教師データ・Pt/Ag実測6枚・v1→v3比較・スケールバーOCR/検量](docs/RESEARCH_REPORT.md)**
+
+**[v4 最新レポート：実画像6視野の採用・除外・要確認と粒径分布](v4/REPORT.md)**
+
+![v4の6枚一括比較](v4/docs/v4_all_six_audit.jpg)
 
 > 実画像での検証は探索的。教師データの一部は合成画像、実画像3枚は弱教師。OCRからのnm換算には保留判定があり、独立した人手正解との照合は未実施。
 
