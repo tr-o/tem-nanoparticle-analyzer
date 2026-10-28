@@ -1,0 +1,52 @@
+{
+  "summary": {
+    "n_images": 4,
+    "mean_dice": 0.91255,
+    "mean_iou": 0.8392000000000001,
+    "caveat": "Synthetic train and test use the same generator; not TEM validation.",
+    "mean_center_precision": 0.98935,
+    "mean_center_recall": 0.651875
+  },
+  "images": [
+    {
+      "image": "test_00.png",
+      "dice": 0.9196,
+      "iou": 0.8512,
+      "measured_particles": 45,
+      "center_detection_precision": 0.9778,
+      "center_detection_recall": 0.6111,
+      "true_fully_visible_particles": 72,
+      "center_matched": 44
+    },
+    {
+      "image": "test_01.png",
+      "dice": 0.9117,
+      "iou": 0.8378,
+      "measured_particles": 49,
+      "center_detection_precision": 0.9796,
+      "center_detection_recall": 0.6316,
+      "true_fully_visible_particles": 76,
+      "center_matched": 48
+    },
+    {
+      "image": "test_02.png",
+      "dice": 0.9043,
+      "iou": 0.8252,
+      "measured_particles": 48,
+      "center_detection_precision": 1.0,
+      "center_detection_recall": 0.6486,
+      "true_fully_visible_particles": 74,
+      "center_matched": 48
+    },
+    {
+      "image": "test_03.png",
+      "dice": 0.9146,
+      "iou": 0.8426,
+      "measured_particles": 53,
+      "center_detection_precision": 1.0,
+      "center_detection_recall": 0.7162,
+      "true_fully_visible_particles": 74,
+      "center_matched": 53
+    }
+  ]
+}

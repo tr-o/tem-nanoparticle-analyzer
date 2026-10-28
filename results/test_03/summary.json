@@ -1,0 +1,11 @@
+{
+  "image": "/home/runner/work/tem-nanoparticle-analyzer/tem-nanoparticle-analyzer/demo_data/test/images/test_03.png",
+  "model": "/home/runner/work/tem-nanoparticle-analyzer/tem-nanoparticle-analyzer/trained_rf.joblib",
+  "n_measured": 53,
+  "mean_diameter": 8.902226415094338,
+  "std_diameter": 3.128435211224181,
+  "diameter_unit": "nm",
+  "nm_per_px": 0.4,
+  "threshold": 0.52,
+  "min_area": 22
+}
