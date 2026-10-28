@@ -1,6 +1,8 @@
-# TEM Nanoparticle Analyzer — v4 画像付き検証結果
+# TEM Nanoparticle Analyzer — v5 高密度Pt監査・人手レビュー
 
 **[📊 図入り統合レポート：教師データ・Pt/Ag実測6枚・v1→v3比較・スケールバーOCR/検量](docs/RESEARCH_REPORT.md)**
+
+**[v5 最新レポート：過剰除外の目視監査・レビューキュー・手動採否GUI（全画像埋込）](v5/REPORT.md)**
 
 **[v4 最新レポート：実画像6視野の採用・除外・要確認と粒径分布](v4/REPORT.md)**
 
