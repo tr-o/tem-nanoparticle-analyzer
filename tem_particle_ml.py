@@ -84,7 +84,8 @@ def fit_model(images, masks, modelpath, seed=2026, max_per_image=7000, trees=55)
         im, mask = read_gray(imp), read_mask(mp)
         if im.shape != mask.shape:
             raise ValueError(f'Image/mask mismatch: {imp}')
-        feat = feature_stack(im).reshape(-1, feature_stack(im).shape[-1])
+        feature_img = feature_stack(im)
+        feat = feature_img.reshape(-1, feature_img.shape[-1])
         labels = mask.ravel().astype(np.uint8)
         selections = []
         for cls in (0, 1):
