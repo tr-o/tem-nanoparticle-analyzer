@@ -1,0 +1,227 @@
+[
+  {
+    "image": "web_image_2bed876c2a14",
+    "description": "Pt densely clustered",
+    "reference": "/mnt/data/ghostwriter_images/web_context/web_image_2bed876c2a14.png",
+    "analysis": "/mnt/data/tem_supervised_demo/real_tests/resized_inputs/web_image_2bed876c2a14_500.png",
+    "status": "review_required",
+    "text": "5nm",
+    "value": 5.0,
+    "unit": "nm",
+    "bar_width_px": 6.0,
+    "nm_per_px": null,
+    "tentative_nm_per_px": 0.8333333333333334,
+    "bar_bbox": [
+      444,
+      450,
+      450,
+      458
+    ],
+    "text_bbox": [
+      414,
+      456,
+      480,
+      487
+    ],
+    "annotation_bbox": [
+      414,
+      445,
+      480,
+      487
+    ],
+    "exclusion_bbox": [
+      412,
+      442,
+      483,
+      490
+    ],
+    "uncertainty_relative": 0.167,
+    "reason": "short bar (12px): endpoint uncertainty at least ±2px total; confirm manually",
+    "method": "ocr_and_geometry; reference resized 2.0000x; field_corr=0.9986"
+  },
+  {
+    "image": "web_image_9828c4ba32bc",
+    "description": "Pt semi-dense",
+    "reference": "/mnt/data/ghostwriter_images/web_context/web_image_9828c4ba32bc.png",
+    "analysis": "/mnt/data/tem_supervised_demo/real_tests/resized_inputs/web_image_9828c4ba32bc_500.png",
+    "status": "accepted",
+    "text": "5nm",
+    "value": 5.0,
+    "unit": "nm",
+    "bar_width_px": 11.5,
+    "nm_per_px": 0.43478260869565216,
+    "tentative_nm_per_px": 0.43478260869565216,
+    "bar_bbox": [
+      439,
+      450,
+      450,
+      458
+    ],
+    "text_bbox": [
+      412,
+      456,
+      478,
+      487
+    ],
+    "annotation_bbox": [
+      412,
+      445,
+      478,
+      487
+    ],
+    "exclusion_bbox": [
+      409,
+      442,
+      480,
+      490
+    ],
+    "uncertainty_relative": 0.087,
+    "reason": "OCR+bar geometry accepted",
+    "method": "ocr_and_geometry; reference resized 2.0000x; field_corr=0.9984"
+  },
+  {
+    "image": "web_image_6af295ebd363",
+    "description": "Pt medium",
+    "reference": "/mnt/data/ghostwriter_images/web_context/web_image_6af295ebd363.png",
+    "analysis": "/mnt/data/tem_supervised_demo/real_tests/resized_inputs/web_image_6af295ebd363_500.png",
+    "status": "accepted",
+    "text": "5nm",
+    "value": 5.0,
+    "unit": "nm",
+    "bar_width_px": 10.0,
+    "nm_per_px": 0.5,
+    "tentative_nm_per_px": 0.5,
+    "bar_bbox": [
+      456,
+      459,
+      466,
+      465
+    ],
+    "text_bbox": [
+      428,
+      466,
+      493,
+      499
+    ],
+    "annotation_bbox": [
+      428,
+      456,
+      493,
+      499
+    ],
+    "exclusion_bbox": [
+      426,
+      453,
+      496,
+      500
+    ],
+    "uncertainty_relative": 0.1,
+    "reason": "OCR+bar geometry accepted",
+    "method": "ocr_and_geometry; reference resized 2.0000x; field_corr=0.9962"
+  },
+  {
+    "image": "web_image_b9ecc5092cc1",
+    "description": "Ag isolated",
+    "reference": "/mnt/data/ghostwriter_images/web_context/web_image_b9ecc5092cc1.png",
+    "analysis": "/mnt/data/tem_supervised_demo/real_tests/resized_inputs/web_image_b9ecc5092cc1_500.png",
+    "status": "accepted",
+    "text": "10nm",
+    "value": 10.0,
+    "unit": "nm",
+    "bar_width_px": 23.0,
+    "nm_per_px": 0.43478260869565216,
+    "tentative_nm_per_px": 0.43478260869565216,
+    "bar_bbox": [
+      428,
+      450,
+      450,
+      458
+    ],
+    "text_bbox": [
+      335,
+      435,
+      495,
+      500
+    ],
+    "annotation_bbox": null,
+    "exclusion_bbox": [
+      377,
+      447,
+      500,
+      484
+    ],
+    "uncertainty_relative": 0.043,
+    "reason": "OCR+bar geometry accepted",
+    "method": "ocr_and_geometry; reference resized 2.0000x; field_corr=0.9995"
+  },
+  {
+    "image": "web_image_82853817b188",
+    "description": "Ag noisy background",
+    "reference": "/mnt/data/ghostwriter_images/web_context/web_image_82853817b188.png",
+    "analysis": "/mnt/data/tem_supervised_demo/real_tests/resized_inputs/web_image_82853817b188_500.png",
+    "status": "accepted",
+    "text": "10nm",
+    "value": 10.0,
+    "unit": "nm",
+    "bar_width_px": 43.0,
+    "nm_per_px": 0.23255813953488372,
+    "tentative_nm_per_px": 0.23255813953488372,
+    "bar_bbox": [
+      408,
+      450,
+      450,
+      458
+    ],
+    "text_bbox": [
+      335,
+      435,
+      495,
+      500
+    ],
+    "annotation_bbox": null,
+    "exclusion_bbox": [
+      367,
+      447,
+      491,
+      484
+    ],
+    "uncertainty_relative": 0.023,
+    "reason": "OCR+bar geometry accepted",
+    "method": "ocr_and_geometry; reference resized 2.0000x; field_corr=0.9947"
+  },
+  {
+    "image": "web_image_8222294b2379",
+    "description": "Ag sparse",
+    "reference": "/mnt/data/ghostwriter_images/web_context/web_image_8222294b2379.png",
+    "analysis": "/mnt/data/tem_supervised_demo/real_tests/resized_inputs/web_image_8222294b2379_500.png",
+    "status": "accepted",
+    "text": "10nm",
+    "value": 10.0,
+    "unit": "nm",
+    "bar_width_px": 23.0,
+    "nm_per_px": 0.43478260869565216,
+    "tentative_nm_per_px": 0.43478260869565216,
+    "bar_bbox": [
+      428,
+      450,
+      450,
+      458
+    ],
+    "text_bbox": [
+      335,
+      435,
+      495,
+      500
+    ],
+    "annotation_bbox": null,
+    "exclusion_bbox": [
+      377,
+      447,
+      500,
+      484
+    ],
+    "uncertainty_relative": 0.043,
+    "reason": "OCR+bar geometry accepted",
+    "method": "ocr_and_geometry; reference resized 2.0000x; field_corr=0.9973"
+  }
+]
