@@ -1,70 +1,106 @@
-# TEM Nanoparticle Analyzer
+# TEM nanoparticle supervised segmentation prototype
 
-教師あり **Random Forest + 多尺度特徴量 + marker-controlled watershed** によるTEMナノ粒子の粒径解析プロトタイプ。
+**教師あり学習 / Random Forest + multi-scale image features + marker-controlled watershed**
 
-> **重要:** デモで使用した教師画像・マスクは**すべて人工生成した模擬TEM**です。実際のPt-TEM画像での精度は未評価です。論文中の平均粒径との一致を目標にはしていません。
+これは動作確認済みの試作であり、**添付モデルの学習・検証データは擬似的に生成したTEM風画像**です。実際のTEM画像での性能は未検証です。実際のPt-TEMへの利用時は、代表画像で手動ラベルを作って再学習することを推奨します。
 
-![教師ありTEM粒径解析のワークフロー](docs/analysis_overview.jpg)
+## 動作確認した結果
 
-## 最初に
+- 320×320 px、模擬TEM画像16枚を学習、独立した4枚で評価（異なる乱数シード、同一生成方式）。
+- **画素単位**のDice平均 **0.913**、IoU平均 **0.839**。
+- 模擬データの粒子中心との対応評価：Precision平均 **0.989**、Recall平均 **0.652**（完全に画像内に入った模擬粒子に限定、半径依存の中心距離マッチング）。特に**重なった粒子の分離不足**が主な課題。物理的な粒径誤差を示すものではありません。
+- 擬似スケールとして 0.4 nm/pixel を指定した例も含む。この値は実測ではありません。
+- `results/test_00/overview.png` に粒子輪郭と粒径ヒストグラム、`particles.csv` に各粒子の測定値。
+
+## 必要環境
+
+Python 3.10 以降（WSL/Windows/Linux）。`requirements.txt` に記載のライブラリ。
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate   # Windows PowerShell: .venv\\Scripts\\Activate.ps1
 pip install -r requirements.txt
 python run_demo.py
-# ブラウザGUI (任意)
+```
+
+**付属する学習済みモデルをそのまま使ってデモ解析**：
+
+```bash
+python tem_particle_ml.py predict \
+  --image demo_data/test/images/test_00.png \
+  --model trained_rf.joblib \
+  --out results/new_test --nm-per-px 0.4
+```
+
+ブラウザGUI（任意）：
+
+```bash
 pip install gradio pandas
 python app.py
 ```
 
-生成済み教師データは `demo_data/train/images` と `demo_data/train/masks`、独立テスト画像は `demo_data/test/` 以下です。**マスクは白が粒子、黒が背景**。元画像とマスクは同じベース名で対応します。
+GUIには添付画像の解析、スケール指定、閾値の調整、輪郭表示、CSVダウンロード機能があります。
 
-[画像・マスクの一覧](docs/TRAINING_DATA.md) · [公開TEMの参照ギャラリー](docs/REFERENCE_TEM.md) · [評価方法](docs/METHODS.md)
+## 実験TEMから教師あり学習を作る
 
-## 動作
+次のように画像と**人間がラベルした2値マスク**を用意します。白=粒子、黒=背景。
 
-- RFで多尺度Gaussian、LoG、局所コントラスト、輝度勾配などから**画素単位の粒子確率**を推定する（K-meansや閾値のみではない）。
-- Watershedで接触領域を暫定分離する。**強い重なりは分離失敗しうる**。
-- 円相当径、Feret最大径、円形度、アスペクト比、CSV、輪郭付き画像、ヒストグラムを出力。
-- スケールが未確定の場合はpx単位のみで出力。デモの`0.4 nm/pixel`は架空の値。
-
-## 実測TEMから再学習
-
-```bash
-python tem_particle_ml.py train --images real/train/images --masks real/train/masks --model pt_rf.joblib
-python tem_particle_ml.py evaluate --images real/test/images --masks real/test/masks --model pt_rf.joblib --out real_metrics.json
-python tem_particle_ml.py predict --image my_tem.png --model pt_rf.joblib --out results/my_tem --nm-per-px 0.16
+```text
+my_tem/
+  train/
+    images/ a.png  b.png  ...
+    masks/  a.png  b.png  ...
+  test/
+    images/ z.png ...
+    masks/  z.png ...
 ```
 
-※ `0.16` は説明用の仮定値。実際の校正値を入力してください。画像単位のtrain/test分離を徹底し、接触粒子・低コントラスト・支持膜の濃淡を含めて評価します。
+Fiji/ImageJ、napari、Labelme、CVAT などでアノテーション可能です。学習するのは**粒子と背景の意味的セグメンテーション**であり、Watershedでの分離は現在は教師なしの後処理です。強く重なった粒子を高精度で分離したい場合は、粒子ごとのインスタンス注釈（または中心点と境界の追加ラベル）が必要です。
 
-## デモ精度（**模擬データのみ**）
+```bash
+python tem_particle_ml.py train \
+    --images my_tem/train/images --masks my_tem/train/masks \
+    --model pt_rf.joblib
+python tem_particle_ml.py evaluate \
+    --images my_tem/test/images --masks my_tem/test/masks \
+    --model pt_rf.joblib --out real_test_metrics.json
+python tem_particle_ml.py predict \
+    --image my_real_tem.png --model pt_rf.joblib \
+    --out my_real_result --nm-per-px 0.16
+```
 
-320×320 px画像16枚で学習、別の4枚をテスト（同じ画像生成方式、異なるseed）。
+`0.16` は**説明用の架空の nm/pixel**です。実際には電子顕微鏡のメタデータ、スケールバーの検量などで得た値を指定してください。値が不明なら `--nm-per-px` を省略し、ピクセル単位だけで出力できます。
 
-| 指標 | 平均 |
-|---|---:|
-| 粒子領域 Dice | 0.913 |
-| 粒子領域 IoU | 0.839 |
-| 粒子中心 Precision | 0.989 |
-| 粒子中心 Recall | 0.652 |
+### 教師データと評価の注意
 
-値は旧試作による実測実行結果であり、**現リポジトリ上の再生成・再学習後に必ず再測定してください**。Pixel Diceと粒子ごとの径の精度は別です。接触粒子の見落としが残っています。
+- **画像単位**でtrain/testを分離。同じ原画像からのタイルやほぼ同じ視野を両方に入れない（リーク回避）。
+- Pt粒子でも粒径の小さいもの、密集、極低コントラスト、支持膜の濃淡、汚染を含めて注釈する。
+- アノテーションの曖昧な粒子、支持膜の模様、明確な凝集部分は判定基準を決める。判定困難な粒子を必ず個数に含める必要はない。
+- 画像周縁で切れた粒子は、集計から除外する。
+- `diameter_px` は円相当径 `sqrt(4*A/pi)`、`feret_max_px` は最大Feret径の近似、`aspect_ratio` は長軸/短軸、`circularity` はCrofton周長から算出。
+- 画像から粒子が見えない、強く重なる場合、2D投影像から元の単粒子サイズを一意に復元できない。
 
-## データの取り扱いと権利
+## ファイル一覧
 
-`demo_data/`は本プロジェクトでプログラム生成した模擬データです。外部の研究機関・メーカーのTEM画像は、権利確認なしに教師データとして混入・再配布しません。`docs/REFERENCE_TEM.md`に元サイトへの参照とライセンス区分を記録しています。
+- `tem_particle_ml.py`: 模擬データ生成、学習、評価、推論、粒径統計
+- `app.py`: ローカルブラウザGUI
+- `run_demo.py`: 一括実行デモ
+- `trained_rf.joblib`: 模擬TEM学習済みモデル
+- `demo_data/`: 模擬画像、二値教師マスク、真の生成中心
+- `test_metrics.json`: テスト評価結果
+- `results/test_0*/`: 輪郭付き画像、粒径分布、CSV等
 
-関連研究: Gumbiowski et al. (2023), [Nanoscale Advances](https://doi.org/10.1039/D2NA00781A) / [ANTEMA](https://github.com/ngumb/ANTEMA)。
+## 関連する実験データ・参考例
 
-## 方針
+- Gumbiowski et al., *Nanoscale Advances* (2023), https://doi.org/10.1039/d2na00781a 。DeepLabV3+による金属ナノ粒子領域セグメンテーション、粒子分離と計測。
+- Subramanian et al., TEMExtraction (2021), https://github.com/CederGroupHub/TEMExtraction 。金ナノ粒子のインスタンスアノテーション131枚を提供するプロジェクト（データ・画像の外部取得が別途必要）。
+- Kunwar S. Aaim, Nanoparticle TEM Image Segmentation: https://kunwarsaaim.github.io/projects/post_nanoparticle.html 。Pt BF-TEMの手動マスクでU-Net系を比較した研究。
 
-まずデモを**再現可能な基準系**として確立し、その後実測Pt-TEMを手動注釈して再学習。将来的には接触粒子に対するインスタンス教師データを追加する。
+**現段階は模擬画像による技術的PoCです。実測TEMの定量解析にそのまま使用できると保証するものではありません。**
 
 
-## v2: 実測TEMへの教師あり適応（2026年10月）
+## v3: Scale-bar OCR and calibrated particle diameters
 
-[**v2比較レポート（6枚の実画像・輪郭・粒径分布）**](v2/REPORT.md) / [改良版の実行手順](v2/README_GITHUB.md)
+[6 real-TEM scale bar detections and diagnostics](v2/SCALE_CALIBRATION.md) — [v3 implementation/GUI](v2/README_GITHUB.md).
 
-重なり候補の保守的除外、スケールバー領域除外、接触粒子のWatershed分割、Ag/Pt実画像3枚からの弱教師追加を実装。**独立した実測TEM正解マスクによる精度評価は未実施**です。論文値への一致を評価指標には使用していません。
+The calibration pipeline reads the numeric label, locates its drawn bar, excludes the annotation, and maps image pixels to nm. High-resolution originals can be used to calibrate resized images, subject to a same-view correlation check. Short/ambiguous bars are **not** silently accepted. A reduced 15-tree model is included for the v3 GUI, but it is not a substitute for external real-TEM validation.
