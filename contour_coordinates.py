@@ -56,11 +56,24 @@ def draw_roi_contours(image_rgb: np.ndarray, roi_mask: np.ndarray,
     if image_rgb.ndim != 3 or image_rgb.shape[2] != 3:
         raise CoordinateFrameError("expected a 3-channel RGB image")
     H, W = image_rgb.shape[:2]
-    roi = MaskROI(np.asarray(roi_mask), tuple(roi_origin_xy), (H,W), "same-image")
-    full = roi.to_full(expected_key="same-image", expected_shape_hw=(H,W))
-    contours, _ = cv2.findContours(full, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+    # Validate the ROI geometry, but don't allocate a full-size mask for
+    # every particle (there may be thousands in one TEM field of view).
+    m = np.asarray(roi_mask)
+    if m.ndim != 2 or m.size == 0:
+        raise CoordinateFrameError("expected nonempty 2-D ROI mask")
+    try:
+        x0, y0 = (int(roi_origin_xy[0]), int(roi_origin_xy[1]))
+    except (TypeError, ValueError, IndexError) as e:
+        raise CoordinateFrameError("explicit ROI (x,y) origin required") from e
+    h, w = m.shape
+    if x0 < 0 or y0 < 0 or x0 + w > W or y0 + h > H:
+        raise CoordinateFrameError("ROI lies outside source image")
+    contours, _ = cv2.findContours(m.astype(bool).astype('uint8'), cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
     if contours:
-        cv2.drawContours(image_rgb, contours, -1, tuple(map(int,color_rgb)), thickness, line_type)
+        # cv2 returns (x,y). Offset x by x0 and y by y0, not row/col.
+        offset = np.array([[[x0,y0]]], dtype=np.int32)
+        global_contours = [contour.astype(np.int32) + offset for contour in contours]
+        cv2.drawContours(image_rgb, global_contours, -1, tuple(map(int,color_rgb)), thickness, line_type)
     return image_rgb
 
 
