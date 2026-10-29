@@ -1,3 +1,11 @@
+## v9：独立した実HRTEM正解マスクによる精度検証
+
+- [v9：画像付き研究レポート](v9/REPORT.md)
+- [人手ラベルとの比較プログラム](v9/real_gt_benchmark.py)
+- [GitHub Actions：実験HRTEMの評価](.github/workflows/v9-human-gt.yml)
+
+**注：** v9は検証段階。実験画像の正解マスクとの比較が完了するまで、精度向上を確定したものとして扱わない。
+
 # 最新：v8 公開DM3生データ解析
 
 **[実DM3ナノ粒子TEM2枚の読み込み・校正・HRTEM比較／画像12点埋め込み](v8/INDEX.md)**
