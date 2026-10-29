@@ -1,0 +1,21 @@
+{
+  "accepted": 106,
+  "review": 11,
+  "rejected": 16,
+  "file": "NP-TEM-Image2.dm3",
+  "source_sha256": "9bf9ce564ac96b8874e001916721d6fdf0ce5214778dddb29aba495b6c199b5c",
+  "dataset_index": 0,
+  "shape": [
+    768,
+    768
+  ],
+  "x_nm_per_px": 0.06464803218841553,
+  "y_nm_per_px": 0.06464803218841553,
+  "median_diameter_nm": 2.3165,
+  "method": "HRTEM crystal texture + dark envelope: exploratory, no expert GT",
+  "params": {
+    "min_diameter_nm": 1.0,
+    "dark_threshold": 0.025,
+    "texture_threshold": 0.12
+  }
+}
