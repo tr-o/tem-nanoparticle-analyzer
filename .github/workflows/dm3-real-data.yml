@@ -1,0 +1,68 @@
+name: Validate real nanoparticle TEM DM3 images
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v8/*.py'
+      - '.github/workflows/dm3-real-data.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  dm3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install TEM scientific IO and analysis libraries
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install 'rosettasciio==0.15.0'
+      - name: Run format and calibration unit tests
+        run: PYTHONPATH=v8 python -m unittest discover -s v8 -p 'test_*.py' -v
+      - name: Fetch original DM3 nanoparticle test images (no redistribution)
+        run: |
+          mkdir -p /tmp/antema
+          curl --fail --location --retry 4 --silent --show-error --output /tmp/antema/NP-TEM-Image1.dm3 https://raw.githubusercontent.com/ngumb/ANTEMA/main/Testimages/NP-TEM-Image1.dm3
+          curl --fail --location --retry 4 --silent --show-error --output /tmp/antema/NP-TEM-Image2.dm3 https://raw.githubusercontent.com/ngumb/ANTEMA/main/Testimages/NP-TEM-Image2.dm3
+          ls -lh /tmp/antema
+          sha256sum /tmp/antema/*.dm3
+      - name: Inspect original DM3 metadata and run model inference
+        run: |
+          set -euo pipefail
+          for i in 1 2; do
+            img="/tmp/antema/NP-TEM-Image${i}.dm3"
+            dest="v8/results/NP-TEM-Image${i}"
+            python v8/inspect_dm.py "$img" --out "${dest}_inspect.json"
+            python v8/analyze_dm.py --image "$img" --dataset-index 0 --model trained_rf.joblib --output "$dest" --max-side 768
+          done
+          python v8/build_report.py
+      - name: Verify embedded images and json
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('v8')
+          assert (p/'REPORT.md').exists()
+          for q in sorted((p/'results').glob('*/summary.json')):
+            d=json.loads(q.read_text())
+            assert d['n_candidates']==d['accepted']+d['review']+d['rejected']
+            for name in ('overview.jpg','raw_preview.png','probability.png','overlay.png'):
+              assert (q.parent/name).stat().st_size>1000
+            print(q,d['calibration_status'],d['accepted'])
+          PY
+      - name: Commit report and derived previews only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v8/REPORT.md v8/results/
+          git add v8/*_inspect.json
+          if git diff --cached --quiet; then
+            echo 'Report unchanged'
+          else
+            git commit -m 'Record real DM3 TEM analysis, calibration and illustrated report [skip ci]'
+            git push origin HEAD:main
+          fi
