@@ -13,6 +13,7 @@ from skimage import measure,segmentation,morphology,feature
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.metrics import f1_score,jaccard_score
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
+from contour_coordinates import draw_roi_contours
 from tem_particle_ml import read_gray,read_mask,feature_stack,normalize,predict_probability
 from scale_calibration import detect_scale,exclusion_mask,draw_scale_overlay,transfer_calibration
 from dataclasses import asdict
@@ -155,11 +156,9 @@ def run(img_path,model_path=MODEL,outdir=None, threshold=.48, min_area=22, min_c
         # default: exclude until reviewed.
         if nseed==3 and stats['circularity']<.81:reasons.append('ambiguous_three_way_contact')
         status='rejected' if reasons else ('split_touching' if nseed>=2 else 'accepted')
-        pts=measure.find_contours(local_mask.astype('uint8'),.5)
-        for contour in pts:
-            xy=contour[:,::-1]+np.array([c0,r0])
-            cv2.polylines(overlay,[np.rint(xy).astype('int32').reshape(-1,1,2)],True,
-                          colors[status],1,lineType=cv2.LINE_AA)
+        draw_roi_contours(overlay,local_mask,
+                          roi_origin_xy=(int(c0),int(r0)),
+                          color_rgb=colors[status],thickness=1,line_type=cv2.LINE_AA)
         if status!='rejected':labels_out[mask]=rid
         rows.append(dict(id=rid,status=status,rejection_reasons=';'.join(reasons),parent_id=parent,
                          n_seeds_in_parent=nseed,**stats))
