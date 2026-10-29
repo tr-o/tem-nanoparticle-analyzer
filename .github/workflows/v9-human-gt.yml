@@ -25,8 +25,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install h5py rosettasciio==0.15.0
-      - name: Verify benchmark script
-        run: python -m py_compile v9/real_gt_benchmark.py v9/build_report.py
+      - name: Verify benchmark script and negative controls
+        run: |
+          python -m py_compile v9/real_gt_benchmark.py v9/build_report.py
+          PYTHONPATH=v9 python -m unittest discover -s v9 -p 'test_benchmark.py' -v
       - name: Download public Au 5 nm HRTEM images and manually labeled masks
         id: download
         continue-on-error: true
