@@ -20,5 +20,7 @@ def inspect(path):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('image');p.add_argument('--out');a=p.parse_args()
     d=inspect(a.image)
-    if a.out:Path(a.out).write_text(json.dumps(json_safe(d),indent=2))
+    if a.out:
+        p=Path(a.out);p.parent.mkdir(parents=True,exist_ok=True)
+        p.write_text(json.dumps(json_safe(d),indent=2))
     print(json.dumps(json_safe(d),indent=2))
