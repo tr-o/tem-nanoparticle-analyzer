@@ -1,0 +1,44 @@
+{
+  "source_name": "NP-TEM-Image2.dm3",
+  "dm_version": 3,
+  "datasets": [
+    {
+      "index": 0,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "int32",
+      "ndim": 2,
+      "axes": [
+        {
+          "name": "y",
+          "units": "nm",
+          "scale": 0.048486024141311646,
+          "size": 1024,
+          "index_in_array": 0
+        },
+        {
+          "name": "x",
+          "units": "nm",
+          "scale": 0.048486024141311646,
+          "size": 1024,
+          "index_in_array": 1
+        }
+      ]
+    }
+  ],
+  "two_dimensional_images": [
+    {
+      "index": 0,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "int32",
+      "x_nm_per_px": 0.048486024141311646,
+      "y_nm_per_px": 0.048486024141311646,
+      "calibration_status": "calibrated"
+    }
+  ]
+}

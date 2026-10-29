@@ -1,0 +1,78 @@
+{
+  "dataset_index": 0,
+  "frame_index": null,
+  "raw_dtype": "int32",
+  "raw_shape": [
+    1024,
+    1024
+  ],
+  "shape": [
+    1024,
+    1024
+  ],
+  "x_nm_per_px": 0.051109135150909424,
+  "y_nm_per_px": 0.051109135150909424,
+  "calibration_status": "calibrated",
+  "spatial_axes": {
+    "y": {
+      "name": "y",
+      "size": 1024,
+      "index_in_array": 0,
+      "scale": 0.03833185136318207,
+      "offset": -0.0,
+      "units": "nm",
+      "navigate": false
+    },
+    "x": {
+      "name": "x",
+      "size": 1024,
+      "index_in_array": 1,
+      "scale": 0.03833185136318207,
+      "offset": -0.0,
+      "units": "nm",
+      "navigate": false
+    }
+  },
+  "metadata": {
+    "General": {
+      "title": "A9 KK AuGCP_0009",
+      "original_filename": "NP-TEM-Image1.dm3"
+    },
+    "Signal": {
+      "signal_type": ""
+    }
+  },
+  "source_name": "NP-TEM-Image1.dm3",
+  "dm_version": 3,
+  "datasets": [
+    {
+      "index": 0,
+      "shape": [
+        1024,
+        1024
+      ],
+      "dtype": "int32",
+      "ndim": 2,
+      "axes": [
+        {
+          "name": "y",
+          "units": "nm",
+          "scale": 0.03833185136318207,
+          "size": 1024,
+          "index_in_array": 0
+        },
+        {
+          "name": "x",
+          "units": "nm",
+          "scale": 0.03833185136318207,
+          "size": 1024,
+          "index_in_array": 1
+        }
+      ]
+    }
+  ],
+  "analysis_shape": [
+    768,
+    768
+  ]
+}

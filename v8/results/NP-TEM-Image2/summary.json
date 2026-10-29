@@ -1,0 +1,23 @@
+{
+  "source": "/tmp/antema/NP-TEM-Image2.dm3",
+  "sha256": "9bf9ce564ac96b8874e001916721d6fdf0ce5214778dddb29aba495b6c199b5c",
+  "shape_original": [
+    1024,
+    1024
+  ],
+  "shape_analysis": [
+    768,
+    768
+  ],
+  "calibration_status": "calibrated",
+  "x_nm_per_px": 0.06464803218841553,
+  "y_nm_per_px": 0.06464803218841553,
+  "n_candidates": 2096,
+  "accepted": 1364,
+  "review": 613,
+  "rejected": 119,
+  "median_equivalent_diameter_nm": 0.4377,
+  "median_equivalent_diameter_px": null,
+  "validation": "No independent hand-labeled ground truth; preliminary candidate measurements only.",
+  "model": "trained_rf.joblib"
+}
