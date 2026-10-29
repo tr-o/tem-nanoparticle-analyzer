@@ -1,0 +1,29 @@
+{
+  "image": "1793279524505.jpg",
+  "width_px": 1529,
+  "height_px": 1536,
+  "red_shift_to_blue_dx_px": 10,
+  "red_shift_to_blue_dy_px": -29,
+  "near_overlap_before": 0.02026856224152401,
+  "near_overlap_after": 0.9482299478338814,
+  "tile_offsets": {
+    "top_left": [
+      9,
+      -29
+    ],
+    "top_right": [
+      9,
+      -29
+    ],
+    "bottom_left": [
+      10,
+      -28
+    ],
+    "bottom_right": [
+      10,
+      -28
+    ]
+  },
+  "interpretation": "constant translation indicative of image-frame mismatch, not identified source code",
+  "warning": "visual diagnostic; do NOT apply this shift to model masks without tracing source transforms"
+}
