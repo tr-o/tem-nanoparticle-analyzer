@@ -16,6 +16,7 @@ from scipy.spatial import cKDTree
 from skimage import measure, feature, segmentation, morphology
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'v2'))
+from contour_coordinates import draw_roi_contours
 from tem_particle_ml import read_gray, normalize,predict_probability
 from tem_v2 import split_candidates, roi_stats, MODEL
 from scale_calibration import detect_scale, transfer_calibration,exclusion_mask
@@ -224,9 +225,9 @@ def run(img_path, outdir, model_path=MODEL, scale_reference=None, probability_ca
         rr0,rr1=max(0,min(yx[0])-2),min(h,max(yx[0])+3)
         cc0,cc1=max(0,min(yx[1])-2),min(w,max(yx[1])+3)
         patch=mask[rr0:rr1,cc0:cc1]
-        for cnt in measure.find_contours(patch.astype('float32'),.5):
-            points=np.round(cnt[:,::-1]+np.array([cc0,rr0])).astype('int32').reshape(-1,1,2)
-            cv2.polylines(overlay,[points],True,colors[r['status']],1,lineType=cv2.LINE_AA)
+        draw_roi_contours(overlay,patch,
+                          roi_origin_xy=(int(cc0),int(rr0)),
+                          color_rgb=colors[r['status']],thickness=1,line_type=cv2.LINE_AA)
     path=Path(outdir);path.mkdir(parents=True,exist_ok=True)
     fieldnames=list(dict.fromkeys(k for row in rows for k in row))
     for name,selection in [('all',rows),('accepted',[r for r in rows if r['status'].startswith('accepted')]),('review',[r for r in rows if r['status']=='review'])]:
