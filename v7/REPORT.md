@@ -61,7 +61,7 @@ full = MaskROI(pixels=local_mask,
 5. マスクが想定する元画像寸法が違えば停止する。
 6. 人工的に (−10,+29) pxずらした赤輪郭を(+10,−29) pxとして検出する。
 
-加えてユーザー提供JPEGの診断値は[JSON](alignment_diagnostic.json)に保存した。
+加えてユーザー提供JPEGの診断値は[JSON](results/alignment_diagnostic.json)に保存した。
 
 ## 5. 残っている確認
 
