@@ -86,7 +86,7 @@ def diagnostic(path,outdir,max_shift=55):
     fig,axs=plt.subplots(1,2,figsize=(15,7))
     axs[0].imshow(orig);axs[0].set_title('User screenshot: apparent contour offset');axs[0].axis('off')
     axs[1].imshow(clean);axs[1].set_title(f'VISUAL DIAGNOSTIC: red shift ({dx:+d},{dy:+d}) px');axs[1].axis('off')
-    fig.tight_layout();fig.savefig(output/'alignment_before_after.jpg',dpi=130,quality=85) if False else fig.savefig(output/'alignment_before_after.jpg',dpi=130)
+    fig.tight_layout();fig.savefig(output/'alignment_before_after.jpg',dpi=130)
     plt.close(fig)
     (output/'alignment_diagnostic.json').write_text(json.dumps(summary,indent=2,ensure_ascii=False))
     return summary
