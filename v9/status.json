@@ -1,0 +1,6 @@
+{
+  "download": "failure",
+  "benchmark": "skipped",
+  "real_gt_metrics_available": false,
+  "note": "Do not claim external GT performance without metrics.json."
+}
