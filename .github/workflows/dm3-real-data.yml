@@ -41,6 +41,14 @@ jobs:
             python v8/analyze_dm.py --image "$img" --dataset-index 0 --model trained_rf.joblib --output "$dest" --max-side 768
           done
           python v8/build_report.py
+      - name: HRTEM-specific crystalline texture baseline
+        run: |
+          set -euo pipefail
+          for i in 1 2; do
+            python v8/hrtem_texture.py --image "/tmp/antema/NP-TEM-Image${i}.dm3" \
+              --output "v8/results_hrtem/NP-TEM-Image${i}" --max-side 768
+          done
+          python v8/build_hrtem_report.py
       - name: Verify embedded images and json
         run: |
           python - <<'PY'
@@ -59,6 +67,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add v8/REPORT.md v8/results/
+          git add v8/HRTEM_EXPERIMENT.md v8/results_hrtem/
           git add v8/*_inspect.json
           if git diff --cached --quiet; then
             echo 'Report unchanged'
