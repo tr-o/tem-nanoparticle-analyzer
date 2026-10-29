@@ -1,0 +1,81 @@
+name: v9 independent HRTEM human-mask benchmark
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v9/real_gt_benchmark.py'
+      - 'v9/build_report.py'
+      - '.github/workflows/v9-human-gt.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install image and HDF5 dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install h5py rosettasciio==0.15.0
+      - name: Verify benchmark script
+        run: python -m py_compile v9/real_gt_benchmark.py v9/build_report.py
+      - name: Download public Au 5 nm HRTEM images and manually labeled masks
+        id: download
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/lbnl
+          for spec in "images 2451485" "labels 2451482"; do
+            set -- $spec
+            file="/tmp/lbnl/$1.h5"
+            curl --fail -L --retry 2 --connect-timeout 30 --max-time 420 \
+              -A "Mozilla/5.0" -o "$file" \
+              "https://datadryad.org/downloads/file_stream/$2"
+            python - "$file" <<'PY'
+          import h5py,sys
+          with h5py.File(sys.argv[1]) as f:
+              print('HDF5 file accepted, datasets:',list(f.keys()))
+          PY
+          done
+      - name: Compare v8 and v9 on independent manual masks
+        id: evaluate
+        if: steps.download.outcome == 'success'
+        continue-on-error: true
+        run: |
+          python v9/real_gt_benchmark.py --images /tmp/lbnl/images.h5 \
+            --labels /tmp/lbnl/labels.h5 --out v9/results_human --count 8
+      - name: Generate report with explicit provenance and completion status
+        shell: bash
+        env:
+          FETCH_STATE: ${{ steps.download.outcome }}
+          EVAL_STATE: ${{ steps.evaluate.outcome }}
+        run: |
+          python - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path('v9')
+          result={'download':os.environ.get('FETCH_STATE','not_run'),
+                  'benchmark':os.environ.get('EVAL_STATE','not_run'),
+                  'real_gt_metrics_available':(p/'results_human/metrics.json').exists(),
+                  'note':'Do not claim external GT performance without metrics.json.'}
+          (p/'status.json').write_text(json.dumps(result,indent=2))
+          PY
+          python v9/build_report.py
+      - name: Commit derived results and figures (no raw HDF5)
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v9/REPORT.md v9/status.json
+          if [ -d v9/results_human ]; then git add v9/results_human/; fi
+          if ! git diff --cached --quiet; then
+            git commit -m "Record v9 HRTEM independent manual-mask benchmark [skip ci]"
+            git push origin HEAD:main
+          fi
