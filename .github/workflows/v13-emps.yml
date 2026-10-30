@@ -1,11 +1,5 @@
 name: v13 supervised instance boundary segmentation on EMPS
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'v13/boundary_model.py'
-      - 'v13/test_v13.py'
-      - '.github/workflows/v13-emps.yml'
   workflow_dispatch:
 permissions:
   contents: write
@@ -39,7 +33,7 @@ jobs:
         id: eval
         if: steps.data.outcome == 'success'
         continue-on-error: true
-        run: python v13/boundary_model.py --dataset-root /tmp/emps --out v13/results
+        run: python experiments/v13/boundary_model.py --dataset-root /tmp/emps --out experiments/v13/results
       - name: Generate research report with images, accurately flag failures
         env:
           DATA: ${{ steps.data.outcome }}
@@ -51,7 +45,7 @@ jobs:
           (root/'status.json').write_text(json.dumps({'data':os.environ['DATA'],'evaluation':os.environ['EVAL'],
                  'metrics_present':(root/'results/metrics.json').exists()},indent=2))
           PY
-          python v13/build_report.py
+          python experiments/v13/build_report.py
       - name: Verify images referenced by report exist
         run: |
           python - <<'PY'
@@ -64,8 +58,8 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add v13/REPORT.md v13/status.json
-          if [ -d v13/results ]; then git add v13/results; fi
+          git add experiments/v13/REPORT.md experiments/v13/status.json
+          if [ -d experiments/v13/results ]; then git add experiments/v13/results; fi
           if ! git diff --cached --quiet; then
             git commit -m 'Record v13 annotated EMPS boundary separator results [skip ci]'
             git pull --rebase origin main
