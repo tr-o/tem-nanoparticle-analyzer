@@ -42,7 +42,7 @@ jobs:
         run: |
           python - <<'PY'
           import os,pathlib,json
-          p=pathlib.Path('v12')
+          p=pathlib.Path('experiments/v12')
           (p/'status.json').write_text(json.dumps({'data':os.environ['FETCH'], 'evaluation':os.environ.get('EVAL','skipped'),
              'metrics_present':(p/'results/metrics.json').exists()},indent=2))
           PY
@@ -51,7 +51,7 @@ jobs:
         run: |
           python - <<'PY'
           import pathlib,re
-          p=pathlib.Path('v12')
+          p=pathlib.Path('experiments/v12')
           for x in re.findall(r'!\[[^]]*\]\(([^)]+)\)',(p/'REPORT.md').read_text()):
             assert (p/x).exists(),x
           PY
