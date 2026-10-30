@@ -50,7 +50,7 @@ jobs:
         run: |
           python - <<'PY'
           import json,os,pathlib
-          d=pathlib.Path('v10')
+          d=pathlib.Path('experiments/v10')
           (d/'emps_status.json').write_text(json.dumps({
             'acquire':os.environ['FETCH_STATE'], 'evaluation':os.environ.get('EVAL_STATE','skipped'),
             'metrics_available':(d/'results_emps/metrics.json').exists(),
@@ -62,7 +62,7 @@ jobs:
         run: |
           python - <<'PY'
           import pathlib,re
-          base=pathlib.Path('v10');doc=(base/'REPORT.md').read_text()
+          base=pathlib.Path('experiments/v10');doc=(base/'REPORT.md').read_text()
           for u in re.findall(r'!\[[^]]*\]\(([^)]+)\)',doc):
             p=base/u
             assert p.exists(),str(p)
