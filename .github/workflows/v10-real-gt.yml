@@ -45,7 +45,7 @@ jobs:
         run: |
           python - <<'PY'
           import os,json,pathlib
-          root=pathlib.Path('v10')
+          root=pathlib.Path('experiments/v10')
           success=(root/'results_human/metrics.json').exists()
           state={'download':os.environ['FETCH_STATE'],'integrity':'success' if os.environ['FETCH_STATE']=='success' else 'not_verified',
                  'benchmark':os.environ.get('BENCH_STATE','skipped'),'real_gt_metrics_available':success}
@@ -56,7 +56,7 @@ jobs:
         run: |
           python - <<'PY'
           import pathlib,re
-          base=pathlib.Path('v10');doc=(base/'REPORT.md').read_text()
+          base=pathlib.Path('experiments/v10');doc=(base/'REPORT.md').read_text()
           for rel in re.findall(r'!\[[^]]*\]\(([^)]+)\)',doc):
               p=base/rel
               assert p.is_file(), f'Image link missing: {p}'
