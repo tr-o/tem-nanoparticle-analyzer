@@ -24,3 +24,23 @@ jobs:
           python -m unittest discover -s tests -v
           PYTHONPATH=experiments/v8 python -m unittest discover -s experiments/v8 -p test_dm_io.py -v
           PYTHONPATH=experiments/v13 python -m unittest discover -s experiments/v13 -p test_v13.py -v
+      - name: Run archived small regression tests without downloading any experimental data
+        run: |
+          python -m pip install pillow h5py requests
+          for version_test in \
+            'v2 test_scale_calibration.py' \
+            'v4 test_v4.py' \
+            'v5 test_review_workflow.py' \
+            'v6 test_audit_protocol.py' \
+            'v7 test_contour_coordinates.py' \
+            'v9 test_benchmark.py' \
+            'v10 test_v10.py' \
+            'v10 test_emps.py' \
+            'v11 test_v11.py' \
+            'v12 test_v12.py' \
+            'v14 test_v14.py' \
+            'v15 test_v15.py'; do
+            read -r version target <<< "$version_test"
+            echo "Checking $version/$target"
+            PYTHONPATH="experiments/$version" python -m unittest discover -s "experiments/$version" -p "$target" -v
+          done
