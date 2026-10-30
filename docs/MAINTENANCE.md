@@ -13,7 +13,7 @@
 ## 更新手順
 
 1. 新たな研究結果は`experiments/vNN/`に、スクリプト・使用データのハッシュ・metrics.json・輪郭画像をセットで追加。
-2. 各図はMarkdownで`![説明](相対パス)`として**直接表示**。相対パスは元ファイルの実在を検証。
+2. 各図はMarkdownの画像埋め込み構文を使って**直接表示**。相対パスは元ファイルの実在を検証。
 3. `python scripts/refactor_repository.py`で、テーマ別の全図アトラスを再構築。
 4. `python scripts/check_repository.py`でMarkdown内部リンクの実在と図掲載率を検証。
 5. `python -m unittest discover -s tests -v`、既存実験の小型回帰テストを実行。
