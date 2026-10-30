@@ -9,7 +9,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]/"v8"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]/"experiments/v8"))
 from hrtem_texture import gabor_coherence
 
 def discover(f):
