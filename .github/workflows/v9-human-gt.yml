@@ -1,11 +1,5 @@
 name: v9 independent HRTEM human-mask benchmark
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'v9/real_gt_benchmark.py'
-      - 'v9/build_report.py'
-      - '.github/workflows/v9-human-gt.yml'
   workflow_dispatch:
 permissions:
   contents: write
@@ -27,7 +21,7 @@ jobs:
           pip install h5py rosettasciio==0.15.0
       - name: Verify benchmark script and negative controls
         run: |
-          python -m py_compile v9/real_gt_benchmark.py v9/build_report.py
+          python -m py_compile experiments/v9/real_gt_benchmark.py experiments/v9/build_report.py
           PYTHONPATH=v9 python -m unittest discover -s v9 -p 'test_benchmark.py' -v
       - name: Download public Au 5 nm HRTEM images and manually labeled masks
         id: download
@@ -53,8 +47,8 @@ jobs:
         if: steps.download.outcome == 'success'
         continue-on-error: true
         run: |
-          python v9/real_gt_benchmark.py --images /tmp/lbnl/images.h5 \
-            --labels /tmp/lbnl/labels.h5 --out v9/results_human --count 8
+          python experiments/v9/real_gt_benchmark.py --images /tmp/lbnl/images.h5 \
+            --labels /tmp/lbnl/labels.h5 --out experiments/v9/results_human --count 8
       - name: Generate report with explicit provenance and completion status
         shell: bash
         env:
@@ -70,13 +64,13 @@ jobs:
                   'note':'Do not claim external GT performance without metrics.json.'}
           (p/'status.json').write_text(json.dumps(result,indent=2))
           PY
-          python v9/build_report.py
+          python experiments/v9/build_report.py
       - name: Commit derived results and figures (no raw HDF5)
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add v9/REPORT.md v9/status.json
-          if [ -d v9/results_human ]; then git add v9/results_human/; fi
+          git add experiments/v9/REPORT.md experiments/v9/status.json
+          if [ -d experiments/v9/results_human ]; then git add experiments/v9/results_human/; fi
           if ! git diff --cached --quiet; then
             git commit -m "Record v9 HRTEM independent manual-mask benchmark [skip ci]"
             git push origin HEAD:main
