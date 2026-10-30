@@ -48,7 +48,7 @@ jobs:
         run: |
           python - <<'PY'
           import json,pathlib
-          p=pathlib.Path('v8')
+          p=pathlib.Path('experiments/v8')
           assert (p/'REPORT.md').exists()
           for q in sorted((p/'results').glob('*/summary.json')):
             d=json.loads(q.read_text())
