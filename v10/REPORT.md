@@ -38,9 +38,38 @@
 
 学習には公式 **train.csv** のみ、評価には **test.csv** のみ使用。異なる撮影モードを含むため、HRTEM専用性能と混同しない。
 
-データ取得：`success` / 評価：`failure`。
+データ取得：`success` / 評価：`success`。
 
-**実画像・教師あり評価は未完了**。公開GitHubからの取得またはモデル実行が成功していない場合、架空のDiceを報告しない。
+### 正解マスクに対する定量結果
+
+学習に使用した画像：28枚。未学習の公式test画像：8枚。
+
+| 指標 | 結果 |
+|---|---:|
+| Pixel Dice | 0.765 |
+| Pixel IoU | 0.682 |
+| 連結成分のPrecision (IoU 0.5) | 0.068 |
+| 連結成分のRecall (IoU 0.5) | 0.089 |
+| Watershed分割後Precision (IoU 0.5) | 0.155 |
+| Watershed分割後Recall (IoU 0.5) | 0.223 |
+
+### 実測画像・粒子ごとの正解輪郭・RF予測・確率マップ
+
+**黄＝粒子ID別の正解境界、シアン＝Watershed後の予測境界**。
+
+![EMPS 5f42a8d4a9: 実測画像、人手インスタンスGT、RF予測、確率](results_emps/5f42a8d4a9.jpg)
+
+![EMPS 8136144eaf: 実測画像、人手インスタンスGT、RF予測、確率](results_emps/8136144eaf.jpg)
+
+![EMPS 8bf3782470: 実測画像、人手インスタンスGT、RF予測、確率](results_emps/8bf3782470.jpg)
+
+![EMPS bcab6454cf: 実測画像、人手インスタンスGT、RF予測、確率](results_emps/bcab6454cf.jpg)
+
+![EMPS c61a50a061: 実測画像、人手インスタンスGT、RF予測、確率](results_emps/c61a50a061.jpg)
+
+![EMPS f28b702df5: 実測画像、人手インスタンスGT、RF予測、確率](results_emps/f28b702df5.jpg)
+
+輪郭が不一致の粒子は良好に見える例だけを選ばず含める。スケール情報を確認していないため**粒径誤差はpx単位**で報告。
 
 ## 4. 評価の限界と今後の改良対象
 

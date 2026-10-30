@@ -1,7 +1,7 @@
 {
   "acquire": "success",
-  "evaluation": "failure",
-  "metrics_available": false,
+  "evaluation": "success",
+  "metrics_available": true,
   "dataset_sha": "dd8f86d714894fd08f3db80041893982ce058dd6",
   "training_test_split": "official EMPS train.csv / test.csv"
 }
