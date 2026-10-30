@@ -1,0 +1,26 @@
+name: Repository quality — all figures, links and smoke tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  links-and-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check all tracked figures are embedded and Markdown paths exist
+        run: python scripts/check_repository.py
+      - name: Compile repository code
+        run: python -m compileall -q tem_analyzer experiments scripts
+      - name: Test stable CLI and geometry/format helpers
+        run: |
+          python -m pip install -r requirements.txt
+          python -m unittest discover -s tests -v
+          PYTHONPATH=experiments/v8 python -m unittest discover -s experiments/v8 -p test_dm_io.py -v
+          PYTHONPATH=experiments/v13 python -m unittest discover -s experiments/v13 -p test_v13.py -v
