@@ -1,0 +1,12 @@
+{
+  "n_images": 20,
+  "observed_delta_percentage_points": 11.524508647897362,
+  "paired_bootstrap_mean_pp": 11.153175400615469,
+  "interval_95_percentile_pp": [
+    0.9194267460820421,
+    23.01198985818106
+  ],
+  "resamples": 20000,
+  "seed": 20261115,
+  "positive_resample_fraction": 0.9874
+}
