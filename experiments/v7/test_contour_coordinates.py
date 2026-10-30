@@ -6,7 +6,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
 import cv2
 import numpy as np
 from contour_coordinates import MaskROI,render_comparison,draw_roi_contours,CoordinateFrameError
-from v7.diagnose_overlay_shift import best_translation,shifted,near_overlap_score
+from experiments.v7.diagnose_overlay_shift import best_translation,shifted,near_overlap_score
 
 
 class TestAbsoluteCoordinates(unittest.TestCase):
