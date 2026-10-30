@@ -20,7 +20,11 @@ if metrics.exists():
  f'| micro F1 | {pct(old["micro_f1"])} | {pct(new["micro_f1"])} |',
  f'| micro Precision | {pct(old["micro_precision"])} | {pct(new["micro_precision"])} |',
  f'| micro Recall | {pct(old["micro_recall"])} | {pct(new["micro_recall"])} |','',
- '## 解析画像：黄が人手GT、シアンが予測輪郭','',
+ '### 視野別：改善したケースと失敗したケース','',
+ '| 画像ID | 正解粒子 | v11 TP | v13 TP | v13 FP |', '|---|---:|---:|---:|---:|',
+ *[f'| `{r["id"]}` | {r["gt_count"]} | {r["v11"]["tp"]} | {r["v13"]["tp"]} | {r["v13"]["fp"]} |' for r in d['per_image']],
+ '', '特に `c61a50a061` は密集した125粒子で、対応数が2→78へ改善。一方 `bcab6454cf` と `99eb4bad25` は検出数0のまま。明暗極性や撮影条件によるドメイン差に課題が残る。`a8e3f32537` は32→22へ悪化。','',
+  '## 解析画像：黄が人手GT、シアンが予測輪郭','',
  '原画像、GT、v11/v13、教師あり境界確率をすべて同一原点・縮尺で描画。','']
  for fig in sorted((root/'results').glob('*.jpg')):
   lines+= [f'![EMPS {fig.stem}：原画像、人手インスタンスGT、v11、v13、教師あり境界確率](results/{fig.name})','']
