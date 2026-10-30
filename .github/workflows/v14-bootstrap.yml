@@ -22,7 +22,7 @@ jobs:
         run: |
           python - <<'PY'
           import pathlib,re
-          path=pathlib.Path('v14');doc=(path/'UNCERTAINTY.md').read_text()
+          path=pathlib.Path('experiments/v14');doc=(path/'UNCERTAINTY.md').read_text()
           for src in re.findall(r'!\[[^\]]*\]\(([^)]+)\)',doc):assert (path/src).is_file(),src
           PY
       - name: Commit uncertainty chart and documentation only
