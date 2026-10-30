@@ -6,7 +6,7 @@
 
 ![模擬TEMトレーニング画像16枚と正解二値マスク](train_contact_sheet.jpg)
 
-- 生成条件：`python tem_particle_ml.py generate-demo --out demo_data --train 16 --test 4`
+- 生成条件：`python -m tem_analyzer.legacy_rf generate-demo --out demo_data --train 16 --test 4`
 - train seed: 900–915、画像サイズ320×320 px、70個の模擬粒子中心を生成。
 - 生画像：`demo_data/train/images/train_00.png` ～ `train_15.png`
 - 対応マスク：`demo_data/train/masks/train_00.png` ～ `train_15.png`

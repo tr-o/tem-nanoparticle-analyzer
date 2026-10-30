@@ -42,7 +42,7 @@ rows += ['## 信頼性と課題','',
 '', '## 再実行', '', '```bash',
 'pip install -r requirements.txt', 'pip install rosettasciio==0.15.0',
 'python experiments/v8/inspect_dm.py example.dm3 --out experiments/v8/inspect.json',
-'python experiments/v8/analyze_dm.py --image example.dm3 --dataset-index 0 --model trained_rf.joblib --output experiments/v8/results/example',
+'python experiments/v8/analyze_dm.py --image example.dm3 --dataset-index 0 --model models/synthetic_rf.joblib --output experiments/v8/results/example',
 '```','',
 'GitHub Actions: [DM3 real image validation workflow](../.github/workflows/dm3-real-data.yml)',
 '', '出典: Gumbiowski et al., Nanoscale Advances 2023, DOI: [10.1039/d2na00781a](https://doi.org/10.1039/d2na00781a).']

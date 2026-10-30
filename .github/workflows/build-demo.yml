@@ -21,7 +21,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Generate all 16+4 synthetic images and masks, train RF, evaluate
-        run: python run_demo.py
+        run: python -m scripts.run_demo
       - name: Build training / test contact sheets and analysis preview
         run: python scripts/make_gallery.py
       - name: Fetch explicitly licensed reference TEM figure
@@ -32,8 +32,8 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add demo_data/ docs/*.jpg test_metrics.json results/ reference_tem/
-          git add -f trained_rf.joblib
+          git add demo_data/ docs/*.jpg results/test_metrics.json results/ reference_tem/
+          git add -f models/synthetic_rf.joblib
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else

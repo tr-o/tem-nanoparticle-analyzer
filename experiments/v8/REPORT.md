@@ -62,7 +62,7 @@
 pip install -r requirements.txt
 pip install rosettasciio==0.15.0
 python v8/inspect_dm.py example.dm3 --out v8/inspect.json
-python v8/analyze_dm.py --image example.dm3 --dataset-index 0 --model trained_rf.joblib --output v8/results/example
+python v8/analyze_dm.py --image example.dm3 --dataset-index 0 --model models/synthetic_rf.joblib --output v8/results/example
 ```
 
 GitHub Actions: [DM3 real image validation workflow](../../.github/workflows/dm3-real-data.yml)

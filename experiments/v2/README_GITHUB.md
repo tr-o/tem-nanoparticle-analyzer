@@ -1,6 +1,6 @@
 # TEM Analyzer v2: reproducible research extension
 
-This directory extends the existing `tem_particle_ml.py` model rather than replacing it.
+This directory extends the existing `tem_analyzer/legacy_rf.py` model rather than replacing it.
 
 - `tem_v2.py`: learn ExtraTrees from synthetic + three *weak* real annotations; detect and split particle candidates; conservative shape/contrast screening; CSV and annotated images.
 - `prepare_weak_labels.py`: reproducible *heuristic-assisted* annotation recipes for Ag and Pt screenshots, with one manually selected set of obvious particle centers on a noisy Ag TEM.

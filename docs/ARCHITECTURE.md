@@ -28,7 +28,7 @@ flowchart TD
 
 | 主用途 | コード | 根拠と制限 |
 |---|---|---|
-| 人工TEMのデモ | [初期RF](../tem_particle_ml.py) | 教師16枚・検証4枚は人工画像 |
+| 人工TEMのデモ | [初期RF](../tem_analyzer/legacy_rf.py) | 教師16枚・検証4枚は人工画像 |
 | Pt/Agの明視野画像 | [v2](../experiments/v2/tem_v2.py)、[v4](../experiments/v4/tem_v4.py) | 弱教師・採否規則。専門家GT不足 |
 | スケールバーOCR | [v2 scale](../experiments/v2/scale_calibration.py) | 短いバーは自動確定せず、元解像度参照 |
 | DM3/DM4生データI/O | [v8 io](../experiments/v8/dm_io.py) | DM3実ファイル2件で確認。DM4実ファイル未評価 |

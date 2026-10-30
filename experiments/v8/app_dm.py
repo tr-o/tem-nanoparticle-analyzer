@@ -39,7 +39,7 @@ def run_file(file_path,dataset_index,frame_index,analysis_mode,size_floor_nm):
             summary=infer_hrtem(file_path,output,dataset_index=idx,min_diameter_nm=float(size_floor_nm))
             csv=output/'particles.csv'
         else:
-            summary=infer_rf(file_path,ROOT/'trained_rf.joblib',output,
+            summary=infer_rf(file_path,ROOT/'models/synthetic_rf.joblib',output,
                            dataset_index=idx,frame=frame,max_side=768)
             csv=output/'particles_all.csv'
         return str(output/'overview.jpg'),str(output/'overlay.png'),summary,str(csv)

@@ -13,8 +13,8 @@ PIPELINES = ROOT / "experiments"
 
 def status() -> int:
     for label, file in [
-        ("Synthetic example", ROOT / "run_demo.py"),
-        ("Brightfield RF model", ROOT / "trained_rf.joblib"),
+        ("Synthetic example", ROOT / "scripts/run_demo.py"),
+        ("Brightfield RF model", ROOT / "models/synthetic_rf.joblib"),
         ("DM3 I/O", PIPELINES / "v8/dm_io.py"),
         ("HRTEM exploratory pipeline", PIPELINES / "v8/hrtem_texture.py"),
         ("TEM/SEM boundary benchmark", PIPELINES / "v15/data_scale_benchmark.py"),

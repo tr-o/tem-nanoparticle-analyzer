@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 from scipy import ndimage as ndi
 ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT))
-from tem_particle_ml import read_gray,predict_probability,read_mask
+from tem_analyzer.legacy_rf import read_gray,predict_probability,read_mask
 from v2.tem_v2 import metadata_exclusion,split_candidates
 from sklearn.metrics import f1_score,jaccard_score
 import warnings
@@ -27,7 +27,7 @@ v2=[];v1=[]
 for image in sorted((ROOT/'demo_data/test/images').glob('*.png')):
     mask=read_mask(ROOT/'demo_data/test/masks'/image.name)
     img=read_gray(image)
-    for path,arr in [(MODEL,v2),(ROOT/'trained_rf.joblib',v1)]:
+    for path,arr in [(MODEL,v2),(ROOT/'models/synthetic_rf.joblib',v1)]:
         p=predict_probability(path,img)
         pred=(p>.5)
         arr.append({'image':image.name,'dice':float(f1_score(mask.ravel(),pred.ravel())),'iou':float(jaccard_score(mask.ravel(),pred.ravel()))})

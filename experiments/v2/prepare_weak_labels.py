@@ -32,7 +32,7 @@ def save(name,img,lab,desc):
 img=cv2.imread(str(SRC/'web_image_b9ecc5092cc1_500.png'),0)
 from sys import path
 path.insert(0,str(ROOT))
-import tem_particle_ml as old
+from tem_analyzer import legacy_rf as old
 labels=np.load(ROOT/'real_tests/web_image_b9ecc5092cc1_500/instance_labels.npy')
 rows=old.measure_particles(labels,min_area=50,image=old.read_gray(SRC/'web_image_b9ecc5092cc1_500.png'))
 ids={r['id'] for r in rows if not r['touching_or_irregular'] and r['diameter_px'] > 13 and r['diameter_px'] < 42}

@@ -2,6 +2,9 @@
 
 **電子顕微鏡画像から金属ナノ粒子の粒子数・形状・粒径分布を推定し、検出結果とその限界を検証するための研究用ソフトウェア。**
 
+> **コード統合状況**：実際に起動する共通の入口は `python -m tem_analyzer` です。初期RF・共通輪郭座標・DM読み込みの基盤を整理中です。一方、v13/v15の境界教師ありモデルは**実験コード**であり、自動的に製品版モデルへ置換されていません。新しいv番号を公開APIとして増やす方針ではありません。[コードとモデルの状態](docs/CODE_STATUS.md) / [配布モデル一覧](models/README.md)
+
+
 [使い方](docs/USER_GUIDE.md) · [解析手法](docs/ARCHITECTURE.md) · [全実験の結果](docs/EXPERIMENTS.md) · [定量評価](docs/VALIDATION.md) · **[全画像158点を直接埋め込んだ図アトラス](docs/FIGURE_INDEX.md)**
 
 > **研究プロトタイプ／本番測定の精度保証なし。** 学習済みモデルによって対応する画像が異なります。EMPS（TEM/SEM混合）のF1を、PtのDM3/HRTEM画像での検出精度と読み替えないでください。重なりの3D構造は2D投影像から確定できません。
@@ -86,7 +89,9 @@ python -m tem_analyzer gui
 ## リポジトリの構造
 
 ```text
-tem_analyzer/          # 現行の共通CLI入口（実装は既存実験パイプラインを呼び出す）
+tem_analyzer/          # 単一のCLI・初期RF・輪郭座標・可視化の共通コード
+models/                # 2つの配布RFと用途・精度の登録簿
+scripts/               # デモ再実行・開発/保守用スクリプト
 experiments/
   v2, v4-v15/          # 再現可能な研究履歴・元コード・評価表・画像
 demo_data/             # 人工TEM 16 train / 4 test と正解マスク
@@ -98,7 +103,6 @@ docs/
   USER_GUIDE.md        # コマンド・GUI・データ形式
   VALIDATION.md        # 指標、データ分割、統計的限界
   EXPERIMENTS.md       # すべての実験レポートへの入口
-scripts/               # 図/リンク整合性検査・公開データ再現
 .github/workflows/     # 品質チェックと手動の過去実験再現
 ```
 

@@ -17,6 +17,8 @@ DM3/DM4とGUIは任意依存：
 python -m pip install "rosettasciio==0.15.0" gradio
 ```
 
+共通CLIとモデル用途は[コード運用状況](CODE_STATUS.md)・[配布モデル一覧](../models/README.md)を参照。v13/v15のF1は現在の配布モデルの精度を意味しません。
+
 ## 1. 同梱人工TEMで動作確認
 
 ```bash

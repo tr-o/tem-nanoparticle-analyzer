@@ -4,10 +4,10 @@ import tempfile
 
 import gradio as gr
 import pandas as pd
-from tem_particle_ml import save_inference
+from tem_analyzer.legacy_rf import save_inference
 
-ROOT = Path(__file__).resolve().parent
-DEFAULT_MODEL = ROOT / 'trained_rf.joblib'
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_MODEL = ROOT / 'models/synthetic_rf.joblib'
 EXAMPLE = ROOT / 'demo_data/test/images/test_00.png'
 
 
@@ -16,7 +16,7 @@ def analyze(file_path, model_path, nm_per_px, threshold, min_area, prominence):
         raise gr.Error('TEM画像を選択してください')
     path = Path(model_path).expanduser()
     if not path.exists():
-        raise gr.Error('モデルがありません。先に python run_demo.py を実行してください: ' + str(path))
+        raise gr.Error('モデルがありません。先に python -m tem_analyzer demo を実行してください: ' + str(path))
     scale = float(nm_per_px) if nm_per_px is not None and float(nm_per_px) > 0 else None
     out = Path(tempfile.mkdtemp(prefix='tem_result_'))
     info = save_inference(file_path, path, out, scale,

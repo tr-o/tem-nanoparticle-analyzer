@@ -13,13 +13,13 @@ from skimage import measure,segmentation,morphology,feature
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.metrics import f1_score,jaccard_score
 ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT))
-from contour_coordinates import draw_roi_contours
-from tem_particle_ml import read_gray,read_mask,feature_stack,normalize,predict_probability
+from tem_analyzer.geometry import draw_roi_contours
+from tem_analyzer.legacy_rf import read_gray,read_mask,feature_stack,normalize,predict_probability
 from scale_calibration import detect_scale,exclusion_mask,draw_scale_overlay,transfer_calibration
 from dataclasses import asdict
 
 TRAIN_MODEL=ROOT/'experiments/v2/model_rf_real_weak.joblib'
-MODEL=(ROOT/'experiments/v2/model_rf_real_weak_portable.joblib' if (ROOT/'experiments/v2/model_rf_real_weak_portable.joblib').exists() else TRAIN_MODEL)
+MODEL=(ROOT/'models/weak_tem_rf.joblib' if (ROOT/'models/weak_tem_rf.joblib').exists() else TRAIN_MODEL)
 
 def train(seed=2026,trees=48):
     rng=np.random.default_rng(seed);xx=[];yy=[];ww=[]

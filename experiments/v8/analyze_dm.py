@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT));sys.path.insert(0,str(Path(__file__).resolve().parent))
 from dm_io import load_dm,robust_preview,resize_scale,area_diameter_nm,json_safe
-from tem_particle_ml import predict_probability,split_instances,feature_stack
+from tem_analyzer.legacy_rf import predict_probability,split_instances,feature_stack
 
 
 def infer(path, model, output, dataset_index=None, frame=None, max_side=768, threshold=.52,
@@ -94,7 +94,7 @@ def infer(path, model, output, dataset_index=None, frame=None, max_side=768, thr
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--image',required=True);parser.add_argument('--model',default=str(ROOT/'trained_rf.joblib'))
+    parser.add_argument('--image',required=True);parser.add_argument('--model',default=str(ROOT/'models/synthetic_rf.joblib'))
     parser.add_argument('--output',required=True);parser.add_argument('--dataset-index',type=int);parser.add_argument('--frame',type=int)
     parser.add_argument('--max-side',type=int,default=768);parser.add_argument('--threshold',type=float,default=.52)
     args=parser.parse_args()

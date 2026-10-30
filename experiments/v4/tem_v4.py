@@ -16,8 +16,8 @@ from scipy.spatial import cKDTree
 from skimage import measure, feature, segmentation, morphology
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'experiments/v2'))
-from contour_coordinates import draw_roi_contours
-from tem_particle_ml import read_gray, normalize,predict_probability
+from tem_analyzer.geometry import draw_roi_contours
+from tem_analyzer.legacy_rf import read_gray, normalize,predict_probability
 from tem_v2 import split_candidates, roi_stats, MODEL
 from scale_calibration import detect_scale, transfer_calibration,exclusion_mask
 from dataclasses import asdict

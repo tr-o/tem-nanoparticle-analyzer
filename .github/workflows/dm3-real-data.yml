@@ -33,7 +33,7 @@ jobs:
             img="/tmp/antema/NP-TEM-Image${i}.dm3"
             dest="experiments/v8/results/NP-TEM-Image${i}"
             python experiments/v8/inspect_dm.py "$img" --out "${dest}_inspect.json"
-            python experiments/v8/analyze_dm.py --image "$img" --dataset-index 0 --model trained_rf.joblib --output "$dest" --max-side 768
+            python experiments/v8/analyze_dm.py --image "$img" --dataset-index 0 --model models/synthetic_rf.joblib --output "$dest" --max-side 768
           done
           python experiments/v8/build_report.py
       - name: HRTEM-specific crystalline texture baseline

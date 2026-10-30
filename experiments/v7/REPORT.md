@@ -29,7 +29,7 @@
 
 ## 3. コードに実装した対策
 
-[共通の描画座標ライブラリ](../../contour_coordinates.py) の `MaskROI` は、各マスクに次の情報を必須にする。
+[共通の描画座標ライブラリ](../../tem_analyzer/geometry.py) の `MaskROI` は、各マスクに次の情報を必須にする。
 
 - `pixels`（二値画像）
 - `origin_xy=(x0, y0)`（元画像上の**左上原点**、行列インデックスではなくx,y）
@@ -69,7 +69,7 @@ full = MaskROI(pixels=local_mask,
 
 ### GitHub上の修正コード
 
-- [原画像座標へ変換する共通ライブラリ](../../contour_coordinates.py)
+- [原画像座標へ変換する共通ライブラリ](../../tem_analyzer/geometry.py)
 - [v2の輪郭描画（共通化済み）](../v2/tem_v2.py)
 - [v4の輪郭描画（共通化済み）](../v4/tem_v4.py)
 - [6件の自動テスト](test_contour_coordinates.py)
