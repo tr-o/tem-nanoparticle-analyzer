@@ -45,7 +45,7 @@ def prepare_image(path,max_side=512):
 def robust(image):
     x=image.astype(np.float32)
     lo,hi=np.percentile(x,[.5,99.5])
-    return np.clip((x-lo)/max(float(hi-lo),1e-6),0,1)
+    return np.clip((x-lo)/max(float(hi-lo),1e-6),0,1).astype(np.float32)
 
 def prepare_instances(mask_path, target_shape):
     raw=np.array(Image.open(mask_path))
@@ -58,6 +58,7 @@ def prepare_instances(mask_path, target_shape):
     return raw.astype(np.int32)
 
 def features(img):
+    img=np.asarray(img,dtype=np.float32)
     # Multiscale local contrast, gradient and texture; NOT brightness clustering.
     p=[img]
     for s in (1.,2.5,5.,10.,18.):
