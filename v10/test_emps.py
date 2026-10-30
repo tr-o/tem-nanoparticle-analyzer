@@ -26,7 +26,7 @@ class EMPSBench(unittest.TestCase):
         f=features(a);self.assertEqual(f.shape,(64,64,14));self.assertTrue(np.isfinite(f).all())
     def test_instance_mask_image(self):
         with tempfile.TemporaryDirectory() as d:
-            p=Path(d)/'gt.png';a=np.zeros((32,32),np.int32);a[4:11,6:12]=100;a[17:26,17:22]=200
+            p=Path(d)/'gt.png';a=np.zeros((32,32),np.uint16);a[4:11,6:12]=100;a[17:26,17:22]=200
             Image.fromarray(a).save(p)
             r=prepare_instances(p,(32,32))
             self.assertEqual(set(np.unique(r)),{0,100,200})
