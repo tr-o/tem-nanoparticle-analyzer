@@ -1,198 +1,121 @@
-## 最新検証：同じ8枚からの脱却（v14・v15）
+# TEM Nanoparticle Analyzer
 
-- **[v14：過去8枚を除外した新しい20枚の実測テスト（画像埋め込み）](v14/REPORT.md)** — v13 F1 **29.64%**、明暗反転版v14 F1 **28.50%**。総合では**NO-GO**。明るい粒子だけは36.78%→42.95%に改善したが、暗い粒子で悪化。[差の不確実性](v14/UNCERTAINTY.md)は95%区間 −12.89〜+7.79ポイント。
-- **[v15：教師28→96視野、未使用20枚でF1 23.14%→34.66%（画像8点）](v15/REPORT.md)** — TP 115→139、FP 622→406、FN 142→118。教師増量はこのEMPS内で改善。[画像単位の改善幅と不確実性](v15/UNCERTAINTY.md)（+11.52ポイント、95%ブートストラップ区間 +0.92〜+23.01）。
+**電子顕微鏡画像から金属ナノ粒子の粒子数・形状・粒径分布を推定し、検出結果とその限界を検証するための研究用ソフトウェア。**
 
-**注意：EMPSはTEM/SEM混合。スコアをDM3のHRTEMやPtナノ粒子の汎用精度と読み替えない。**
+[使い方](docs/USER_GUIDE.md) · [解析手法](docs/ARCHITECTURE.md) · [全実験の結果](docs/EXPERIMENTS.md) · [定量評価](docs/VALIDATION.md) · **[全画像157点以上を直接埋め込んだ図アトラス](docs/FIGURE_INDEX.md)**
 
----
+> **研究プロトタイプ／本番測定の精度保証なし。** 学習済みモデルによって対応する画像が異なります。EMPS（TEM/SEM混合）のF1を、PtのDM3/HRTEM画像での検出精度と読み替えないでください。重なりの3D構造は2D投影像から確定できません。
 
-## v13：実測粒子を正しく一つずつ分ける精度が大幅改善（2026-10-30）
+## 何ができるか
 
-**[実験TEM/SEM 8枚の人手インスタンス正解で比較：粒子境界を直接学習するv13レポート（実画像6点埋め込み）](v13/REPORT.md)**
+- **画像読み込み**：PNG/JPEG/TIFFの試作系と、RosettaSciIOを用いたDM3/DM4の読み込み（**実ファイル検証はDM3のみ**）。
+- **スケール校正**：DM3のX/Y実空間軸からnm/pixelを取得。校正情報がない掲載画像ではスケールバーのOCRと棒の画素幅から換算し、短すぎるバーは保留。縮小倍率やX/Yの非等方性を考慮。
+- **粒子抽出**：多尺度特徴 + Random Forest/ExtraTrees、接触粒子のWatershed分離、粒子間境界の教師あり学習。明視野・HRTEMは**別の実験パイプライン**です。
+- **採否と監査**：孤立粒子・接触分離・要確認・重なり疑いの記録。人手の二重レビューと不一致の仲裁。
+- **結果**：粒子ごとのCSV、円相当径、輪郭付き画像、粒径ヒストグラム、採否理由と校正JSON。
+- **評価と再現**：人工画像の正解マスク、実測TEM/SEMのインスタンス正解、GitHub Actions、画像単位のブートストラップ評価。実験版の数値は版ごとに凍結。
 
-- **粒子単位micro F1：v11 15.97% → v13 53.20%**（IoU≥0.5の一対一対応）。
-- **Recall：13.82% → 53.29%、Precision：18.92% → 53.11%**。
-- **密集125粒子の画像では正しく一致した粒子数が2 → 78**。
-- ただし、別画像2件では正解粒子が0件、1件では後退。**まだ普遍的なモデルとは判断しない**。同じ8テスト画像への繰り返しモデル比較による過適合リスクがあり、新撮影セッションで外部評価が必要。
+## まず画像で見る
 
----
+### 元のPt/Ag TEM：採否・重なり・スケール
 
-## 最新の精度検証：実測粒子ID付きデータ（v10〜v13）
+![Pt/Ag 6視野のv4による解析結果](experiments/v4/docs/v4_all_six_audit.jpg)
 
-**[v13：粒子内部・粒子間境界・背景の教師あり学習、実測EMPSによる評価](v13/REPORT.md)**
+![Pt/Ag 6視野のスケールバー検出・領域除外](experiments/v2/calibration_6_images.jpg)
 
-- [v10：初めての実測粒子ID正解による評価](v10/REPORT.md) — 領域Dice 0.765、WatershedのインスタンスRecallは低い
-- [v11：学習データ内の検証セットでWatershedを調整](v11/REPORT.md) — micro F1 14.5% → 16.0%、Recallは微減
-- [v12：粒子中心RF学習](v12/REPORT.md) — F1 9.2%に低下、No-Go
+### 実DM3：生画像の校正とHRTEMへの別方式
 
-**実測の独立テストを主指標とし、候補数や人工画像Diceだけで精度向上と判定しません。** EMPSにはSEMも含まれるためHRTEMへの汎化は別途評価します。
+![公開DM3：元画像、格子縞特徴、粒子候補と粒径ヒストグラム](experiments/v8/results_hrtem/NP-TEM-Image1/overview.jpg)
 
----
+### 教師ありインスタンス分割：人手正解との照合
 
-## v10：実測の粒子別正解マスクで精度を検証
+![実TEM/SEMでの人手粒子ID（黄）とモデル予測（シアン）、v15の学習枚数比較](experiments/v15/results/39b0dc1f52.jpg)
 
-**[v10 図入り研究レポート — EMPS実測TEM/SEMの教師あり評価 + Dryad HRTEM](v10/REPORT.md)**
+**そのほかの結果図・正解マスク・評価画像は省略せず**、[図アトラス](docs/FIGURE_INDEX.md)内のテーマ別Markdownに画像として埋め込みます。元画像の追加・更新時も図索引を自動再生成し、参照漏れをCIで検出します。
 
-- [公式train/testでRandom Forestを学習・評価する実装](v10/benchmark_emps.py)
-- [GitHub Actionsで実際のEMPSデータを評価](.github/workflows/v10-emps.yml)
-- [独立したHRTEM人手マスクの取得と検証](v10/fetch_dataset.py)
+## 現時点で分かっている精度
 
-**計測できた数値だけ報告します。** Dryadからの大容量画像取得はHTTP 401となったため、まずGitHub公開のEMPS実測画像・粒子IDマスクで評価を進めています。
+**主指標は粒子ごとの1対1対応（IoU ≥ 0.5）に基づくmicro F1**です。単純な二値マスクのDiceや採用粒子数だけでは、重なりや過剰除外を正しく評価できません。
 
----
+| 検証 | 評価条件 | 粒子単位F1 | 結論 |
+|---|---|---:|---|
+| v11 → v13 | EMPS 公式testの同じ8視野、教師28視野 | 15.97% → **53.20%** | **境界を直接学習**すると接触分離が改善。ただし旧8視野を複数回使った開発結果 |
+| v13 → v14 | **旧8枚を除いた新しい20視野** | 29.64% → 28.50% | 明暗対称学習は全体でNO-GO。明るい粒子のみ改善 |
+| v13(28枚) → v15(96枚) | **旧28枚を除いた別の新しい20視野** | 23.14% → **34.66%** | 教師実画像の増量が有効。Precision 15.60%→25.50%、Recall 44.75%→54.09% |
+| v15 の信頼区間 | 上記新20視野、画像単位ペアブートストラップ | F1差 **+11.52ポイント** | 95%区間 +0.92〜+23.01ポイント。別顕微鏡への一般化は未確認 |
+| 公開DM3 2件 | ANTEMA由来の実HRTEM | **未評価** | 校正/読込は成功。粒子輪郭の専門家正解がないためF1は報告しない |
 
-## v9：独立した実HRTEM正解マスクによる精度検証
+ここでいう**新しい20視野**もすべて同じEMPSデータセット内（TEM/SEM混合）であり、研究室・機種・撮影セッションを横断する外部検証ではありません。
 
-- [v9：画像付き研究レポート](v9/REPORT.md)
-- [人手ラベルとの比較プログラム](v9/real_gt_benchmark.py)
-- [GitHub Actions：実験HRTEMの評価](.github/workflows/v9-human-gt.yml)
+![v15の学習データ増量によるF1差・画像単位の不確実性](experiments/v15/results/bootstrap_ci.jpg)
 
-**注：** v9は検証段階。実験画像の正解マスクとの比較が完了するまで、精度向上を確定したものとして扱わない。
+詳細な実測データ、失敗例、使用した学習IDは[検証の読み方](docs/VALIDATION.md)と[研究履歴](docs/EXPERIMENTS.md)にまとめました。
 
-# 最新：v8 公開DM3生データ解析
+## まず実行する
 
-**[実DM3ナノ粒子TEM2枚の読み込み・校正・HRTEM比較／画像12点埋め込み](v8/INDEX.md)**
-
-DM3のピクセル校正は取得できましたが、旧明視野用RFは格子縞で大量誤検出しました。HRTEM別方式の候補数とその限界を図付きで記録しています。**精度検証は未完了**です。
-
----
-
-# **座標ずれ修正・回帰テスト（v7）**
-
-[赤・青の輪郭の固定オフセット検査と、ROI原点の共通化・6件のテスト](v7/REPORT.md)
-
----
-
-# TEM nanoparticle analyzer — 最新進捗
-
-**[v6：高密度Ptの過剰除外を検証するブラインド層別レビュー（画像60候補・二重判定ワークフロー）](v6/REPORT.md)**
-
-v6では**モデルの精度を確定したわけではありません**。モデル採用・要確認・除外の各候補を独立して確認する監査のためのサンプルとツールを追加しました。画像由来のSHA-256一致・60件の層別無作為抽出・6件の回帰テストを確認済みです。専門家のレビュー完了後、候補の測定可能性を定量化します。
-
-[**v6レビュー判定基準**](v6/REVIEW_GUIDELINES.md) / [v5予備監査](v5/REPORT.md) / [v1〜v3.1図入り統合レポート](docs/RESEARCH_REPORT.md)
-
----
-
-# TEM Nanoparticle Analyzer — v5 高密度Pt監査・人手レビュー
-
-**[📊 図入り統合レポート：教師データ・Pt/Ag実測6枚・v1→v3比較・スケールバーOCR/検量](docs/RESEARCH_REPORT.md)**
-
-**[v5 最新レポート：過剰除外の目視監査・レビューキュー・手動採否GUI（全画像埋込）](v5/REPORT.md)**
-
-**[v4 最新レポート：実画像6視野の採用・除外・要確認と粒径分布](v4/REPORT.md)**
-
-![v4の6枚一括比較](v4/docs/v4_all_six_audit.jpg)
-
-> 実画像での検証は探索的。教師データの一部は合成画像、実画像3枚は弱教師。OCRからのnm換算には保留判定があり、独立した人手正解との照合は未実施。
-
-[教師画像一覧](docs/TRAINING_DATA.md) / [スケールバー検量の詳細](v2/SCALE_CALIBRATION.md) / [実行手順](v2/README_GITHUB.md)
-
----
-
-# TEM nanoparticle supervised segmentation prototype
-
-**教師あり学習 / Random Forest + multi-scale image features + marker-controlled watershed**
-
-これは動作確認済みの試作であり、**添付モデルの学習・検証データは擬似的に生成したTEM風画像**です。実際のTEM画像での性能は未検証です。実際のPt-TEMへの利用時は、代表画像で手動ラベルを作って再学習することを推奨します。
-
-## 動作確認した結果
-
-- 320×320 px、模擬TEM画像16枚を学習、独立した4枚で評価（異なる乱数シード、同一生成方式）。
-- **画素単位**のDice平均 **0.913**、IoU平均 **0.839**。
-- 模擬データの粒子中心との対応評価：Precision平均 **0.989**、Recall平均 **0.652**（完全に画像内に入った模擬粒子に限定、半径依存の中心距離マッチング）。特に**重なった粒子の分離不足**が主な課題。物理的な粒径誤差を示すものではありません。
-- 擬似スケールとして 0.4 nm/pixel を指定した例も含む。この値は実測ではありません。
-- `results/test_00/overview.png` に粒子輪郭と粒径ヒストグラム、`particles.csv` に各粒子の測定値。
-
-## 必要環境
-
-Python 3.10 以降（WSL/Windows/Linux）。`requirements.txt` に記載のライブラリ。
+Python 3.11推奨。Windows/WSL、Linuxなどで実行できます。
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate   # Windows PowerShell: .venv\\Scripts\\Activate.ps1
-pip install -r requirements.txt
-python run_demo.py
+git clone https://github.com/tr-o/tem-nanoparticle-analyzer.git
+cd tem-nanoparticle-analyzer
+python -m pip install -r requirements.txt
+
+# 環境/必要ファイルの確認
+python -m tem_analyzer doctor
+
+# 同梱の人工TEM 16枚学習 + 4枚テストを再生成（時間がかかります）
+python -m tem_analyzer demo
 ```
 
-**付属する学習済みモデルをそのまま使ってデモ解析**：
+**DM3/DM4を扱う場合**は追加で
 
 ```bash
-python tem_particle_ml.py predict \
-  --image demo_data/test/images/test_00.png \
-  --model trained_rf.joblib \
-  --out results/new_test --nm-per-px 0.4
+python -m pip install "rosettasciio==0.15.0" gradio
+python -m tem_analyzer dm-inspect sample.dm3 --out inspection.json
+python -m tem_analyzer dm-analyze sample.dm3 --method hrtem --out my_results
+python -m tem_analyzer gui
 ```
 
-ブラウザGUI（任意）：
+- `dm-analyze --method hrtem` は**v8の探索的テクスチャモデル**で、粒径の確定精度は未検証です。
+- `--method brightfield` は以前の教師ありRFを使用できますが、**HRTEMに転用すると大量の誤検出が発生しました**。
+- v15は教師あり境界分離の**評価スクリプト**で、DM3用の本番配布済み学習済みモデルではありません。モデルを混同しないでください。
+- 16/32-bit画像は元画素値と表示用正規化を区別し、実長の校正が不明な場合はnmを出しません。
 
-```bash
-pip install gradio pandas
-python app.py
-```
+[詳しいCLI/GUI手順と出力構造](docs/USER_GUIDE.md)
 
-GUIには添付画像の解析、スケール指定、閾値の調整、輪郭表示、CSVダウンロード機能があります。
-
-## 実験TEMから教師あり学習を作る
-
-次のように画像と**人間がラベルした2値マスク**を用意します。白=粒子、黒=背景。
+## リポジトリの構造
 
 ```text
-my_tem/
-  train/
-    images/ a.png  b.png  ...
-    masks/  a.png  b.png  ...
-  test/
-    images/ z.png ...
-    masks/  z.png ...
+tem_analyzer/          # 現行の共通CLI入口（実装は既存実験パイプラインを呼び出す）
+experiments/
+  v2, v4-v15/          # 再現可能な研究履歴・元コード・評価表・画像
+demo_data/             # 人工TEM 16 train / 4 test と正解マスク
+results/               # 初期人工画像の保存済み解析結果
+reference_tem/         # 出典のある参考画像（再利用条件は各出典に従う）
+docs/
+  FIGURE_INDEX.md      # 画像をすべて実際に表示するテーマ別アトラス
+  ARCHITECTURE.md      # 画像・実寸校正・モデル・採否のデータフロー
+  USER_GUIDE.md        # コマンド・GUI・データ形式
+  VALIDATION.md        # 指標、データ分割、統計的限界
+  EXPERIMENTS.md       # すべての実験レポートへの入口
+scripts/               # 図/リンク整合性検査・公開データ再現
+.github/workflows/     # 品質チェックと手動の過去実験再現
 ```
 
-Fiji/ImageJ、napari、Labelme、CVAT などでアノテーション可能です。学習するのは**粒子と背景の意味的セグメンテーション**であり、Watershedでの分離は現在は教師なしの後処理です。強く重なった粒子を高精度で分離したい場合は、粒子ごとのインスタンス注釈（または中心点と境界の追加ラベル）が必要です。
+過去の各`vN`を**削除・上書きせず**、`experiments/vN`以下にアーカイブしています。文献画像、弱教師、実測ラベル、検量JSON、解析コードは用途ごとに区別しています。
 
-```bash
-python tem_particle_ml.py train \
-    --images my_tem/train/images --masks my_tem/train/masks \
-    --model pt_rf.joblib
-python tem_particle_ml.py evaluate \
-    --images my_tem/test/images --masks my_tem/test/masks \
-    --model pt_rf.joblib --out real_test_metrics.json
-python tem_particle_ml.py predict \
-    --image my_real_tem.png --model pt_rf.joblib \
-    --out my_real_result --nm-per-px 0.16
-```
+## 測定結果の読み方と重要な限界
 
-`0.16` は**説明用の架空の nm/pixel**です。実際には電子顕微鏡のメタデータ、スケールバーの検量などで得た値を指定してください。値が不明なら `--nm-per-px` を省略し、ピクセル単位だけで出力できます。
+- 円相当径：`d = 2 sqrt(A × sx × sy / pi)`（`sx`, `sy`は実測のnm/pixel）。スケール未校正ならpixel単位のみ。
+- **採用数 ≠ 真の粒子数**。小粒子の見落とし、塊の過分割、孤立粒子の誤除外が粒径分布を歪めます。
+- **HRTEMの格子縞は粒子の輪郭を保証しません。** v8では従来RFがHRTEMを数千個の偽粒子として認識した失敗も保存。
+- 学習画像の一部は**人工**、実画像の一部は**弱教師**です。専門家が独立に付けた正解ラベルとは別物として表示しています。
+- 粒子中心検出や明暗対称モデルの試作はNO-GOも含めて記録し、成功だけを選んでいません。
+- v13・v14・v15は**テスト視野が異なるため、版をまたいだF1の数値を単純比較しません**。各版内で同じテスト画像を処理した対比較のみ有効です。
+- 外部提供画像・DM3のライセンスと再配布の権利は出典に依存します。公開DM3原本はこのリポジトリに同梱していません。
 
-### 教師データと評価の注意
+## 研究・保守に使うリンク
 
-- **画像単位**でtrain/testを分離。同じ原画像からのタイルやほぼ同じ視野を両方に入れない（リーク回避）。
-- Pt粒子でも粒径の小さいもの、密集、極低コントラスト、支持膜の濃淡、汚染を含めて注釈する。
-- アノテーションの曖昧な粒子、支持膜の模様、明確な凝集部分は判定基準を決める。判定困難な粒子を必ず個数に含める必要はない。
-- 画像周縁で切れた粒子は、集計から除外する。
-- `diameter_px` は円相当径 `sqrt(4*A/pi)`、`feret_max_px` は最大Feret径の近似、`aspect_ratio` は長軸/短軸、`circularity` はCrofton周長から算出。
-- 画像から粒子が見えない、強く重なる場合、2D投影像から元の単粒子サイズを一意に復元できない。
+[研究バージョン一覧](docs/EXPERIMENTS.md) · [図・正解マスクの全件アトラス](docs/FIGURE_INDEX.md) · [再現・品質チェック](docs/MAINTENANCE.md) · [参照TEM出典](docs/REFERENCE_TEM.md)
 
-## ファイル一覧
-
-- `tem_particle_ml.py`: 模擬データ生成、学習、評価、推論、粒径統計
-- `app.py`: ローカルブラウザGUI
-- `run_demo.py`: 一括実行デモ
-- `trained_rf.joblib`: 模擬TEM学習済みモデル
-- `demo_data/`: 模擬画像、二値教師マスク、真の生成中心
-- `test_metrics.json`: テスト評価結果
-- `results/test_0*/`: 輪郭付き画像、粒径分布、CSV等
-
-## 関連する実験データ・参考例
-
-- Gumbiowski et al., *Nanoscale Advances* (2023), https://doi.org/10.1039/d2na00781a 。DeepLabV3+による金属ナノ粒子領域セグメンテーション、粒子分離と計測。
-- Subramanian et al., TEMExtraction (2021), https://github.com/CederGroupHub/TEMExtraction 。金ナノ粒子のインスタンスアノテーション131枚を提供するプロジェクト（データ・画像の外部取得が別途必要）。
-- Kunwar S. Aaim, Nanoparticle TEM Image Segmentation: https://kunwarsaaim.github.io/projects/post_nanoparticle.html 。Pt BF-TEMの手動マスクでU-Net系を比較した研究。
-
-**現段階は模擬画像による技術的PoCです。実測TEMの定量解析にそのまま使用できると保証するものではありません。**
-
-
-## v3: Scale-bar OCR and calibrated particle diameters
-
-[6 real-TEM scale bar detections and diagnostics](v2/SCALE_CALIBRATION.md) — [v3 implementation/GUI](v2/README_GITHUB.md).
-
-The calibration pipeline reads the numeric label, locates its drawn bar, excludes the annotation, and maps image pixels to nm. High-resolution originals can be used to calibrate resized images, subject to a same-view correlation check. Short/ambiguous bars are **not** silently accepted. A reduced 15-tree model is included for the v3 GUI, but it is not a substitute for external real-TEM validation.
+**方針：** 新機能は「観測画像」「予測輪郭」「正解マスク」「粒径分布」「評価指標」を同じレポートに残す。画像を追加したら必ずMarkdown本文へ埋め込み、`scripts/check_repository.py`でリンク・全図掲載・構造を検査します。
