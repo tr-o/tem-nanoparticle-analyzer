@@ -1,3 +1,15 @@
+## v10：実測の粒子別正解マスクで精度を検証
+
+**[v10 図入り研究レポート — EMPS実測TEM/SEMの教師あり評価 + Dryad HRTEM](v10/REPORT.md)**
+
+- [公式train/testでRandom Forestを学習・評価する実装](v10/benchmark_emps.py)
+- [GitHub Actionsで実際のEMPSデータを評価](.github/workflows/v10-emps.yml)
+- [独立したHRTEM人手マスクの取得と検証](v10/fetch_dataset.py)
+
+**計測できた数値だけ報告します。** Dryadからの大容量画像取得はHTTP 401となったため、まずGitHub公開のEMPS実測画像・粒子IDマスクで評価を進めています。
+
+---
+
 ## v9：独立した実HRTEM正解マスクによる精度検証
 
 - [v9：画像付き研究レポート](v9/REPORT.md)
