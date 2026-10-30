@@ -2,7 +2,7 @@
 
 **電子顕微鏡画像から金属ナノ粒子の粒子数・形状・粒径分布を推定し、検出結果とその限界を検証するための研究用ソフトウェア。**
 
-[使い方](docs/USER_GUIDE.md) · [解析手法](docs/ARCHITECTURE.md) · [全実験の結果](docs/EXPERIMENTS.md) · [定量評価](docs/VALIDATION.md) · **[全画像157点以上を直接埋め込んだ図アトラス](docs/FIGURE_INDEX.md)**
+[使い方](docs/USER_GUIDE.md) · [解析手法](docs/ARCHITECTURE.md) · [全実験の結果](docs/EXPERIMENTS.md) · [定量評価](docs/VALIDATION.md) · **[全画像158点を直接埋め込んだ図アトラス](docs/FIGURE_INDEX.md)**
 
 > **研究プロトタイプ／本番測定の精度保証なし。** 学習済みモデルによって対応する画像が異なります。EMPS（TEM/SEM混合）のF1を、PtのDM3/HRTEM画像での検出精度と読み替えないでください。重なりの3D構造は2D投影像から確定できません。
 
