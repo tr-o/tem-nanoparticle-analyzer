@@ -1,0 +1,73 @@
+name: v13 supervised instance boundary segmentation on EMPS
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v13/boundary_model.py'
+      - 'v13/test_v13.py'
+      - '.github/workflows/v13-emps.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install packages
+        run: |
+          pip install -r requirements.txt
+          pip install pillow
+      - name: Run five boundary geometry and scoring regression tests
+        run: PYTHONPATH=v13 python -m unittest discover -s v13 -p test_v13.py -v
+      - name: Get pinned EMPS instance dataset
+        id: data
+        continue-on-error: true
+        run: |
+          git clone --depth 1 --quiet https://github.com/by256/emps.git /tmp/emps
+          test "$(git -C /tmp/emps rev-parse HEAD)" = "dd8f86d714894fd08f3db80041893982ce058dd6"
+      - name: Train core/border classifier and test on held-out official split
+        id: eval
+        if: steps.data.outcome == 'success'
+        continue-on-error: true
+        run: python v13/boundary_model.py --dataset-root /tmp/emps --out v13/results
+      - name: Generate research report with images, accurately flag failures
+        env:
+          DATA: ${{ steps.data.outcome }}
+          EVAL: ${{ steps.eval.outcome }}
+        run: |
+          python - <<'PY'
+          import json,os,pathlib
+          root=pathlib.Path('v13')
+          (root/'status.json').write_text(json.dumps({'data':os.environ['DATA'],'evaluation':os.environ['EVAL'],
+                 'metrics_present':(root/'results/metrics.json').exists()},indent=2))
+          PY
+          python v13/build_report.py
+      - name: Verify images referenced by report exist
+        run: |
+          python - <<'PY'
+          import pathlib,re
+          root=pathlib.Path('v13')
+          for url in re.findall(r'!\[[^\]]*\]\(([^)]+)\)',(root/'REPORT.md').read_text()):
+            assert (root/url).exists(),url
+          PY
+      - name: Commit reproducible metrics and preview figures only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v13/REPORT.md v13/status.json
+          if [ -d v13/results ]; then git add v13/results; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record v13 annotated EMPS boundary separator results [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
