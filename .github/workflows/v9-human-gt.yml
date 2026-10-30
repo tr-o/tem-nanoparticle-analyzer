@@ -57,7 +57,7 @@ jobs:
         run: |
           python - <<'PY'
           import json,os,pathlib
-          p=pathlib.Path('v9')
+          p=pathlib.Path('experiments/v9')
           result={'download':os.environ.get('FETCH_STATE','not_run'),
                   'benchmark':os.environ.get('EVAL_STATE','not_run'),
                   'real_gt_metrics_available':(p/'results_human/metrics.json').exists(),
