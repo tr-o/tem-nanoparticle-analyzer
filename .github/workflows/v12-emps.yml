@@ -1,0 +1,74 @@
+name: v12 real nanoparticle supervised center model
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v12/center_model.py'
+      - 'v12/test_v12.py'
+      - '.github/workflows/v12-emps.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  center:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install packages
+        run: |
+          pip install -r requirements.txt
+          pip install pillow
+      - name: Check supervised centers and markering tests
+        run: PYTHONPATH=v12 python -m unittest discover -s v12 -p test_v12.py -v
+      - name: Get pinned EMPS expert instance labels
+        id: get_data
+        continue-on-error: true
+        run: |
+          git clone --depth 1 --quiet https://github.com/by256/emps.git /tmp/emps
+          test "$(git -C /tmp/emps rev-parse HEAD)" = "dd8f86d714894fd08f3db80041893982ce058dd6"
+      - name: Fit two RF models and evaluate on official held-out test
+        id: evaluate
+        if: steps.get_data.outcome == 'success'
+        continue-on-error: true
+        run: |
+          python v12/center_model.py --dataset-root /tmp/emps --out v12/results
+      - name: Document results and images
+        env:
+          FETCH: ${{ steps.get_data.outcome }}
+          EVAL: ${{ steps.evaluate.outcome }}
+        run: |
+          python - <<'PY'
+          import os,pathlib,json
+          p=pathlib.Path('v12')
+          (p/'status.json').write_text(json.dumps({'data':os.environ['FETCH'], 'evaluation':os.environ.get('EVAL','skipped'),
+             'metrics_present':(p/'results/metrics.json').exists()},indent=2))
+          PY
+          python v12/build_report.py
+      - name: Assert all inlined figures are present
+        run: |
+          python - <<'PY'
+          import pathlib,re
+          p=pathlib.Path('v12')
+          for x in re.findall(r'!\[[^]]*\]\(([^)]+)\)',(p/'REPORT.md').read_text()):
+            assert (p/x).exists(),x
+          PY
+      - name: Commit measurements and illustrated report only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v12/REPORT.md v12/status.json
+          if [ -d v12/results ]; then git add v12/results; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record supervised particle centers on held-out EMPS images [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
