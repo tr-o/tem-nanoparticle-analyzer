@@ -1,10 +1,5 @@
 name: v15 more annotated training data - untouched EMPS test
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'v15/**.py'
-      - '.github/workflows/v15-data-scale.yml'
   workflow_dispatch:
 permissions:
   contents: write
@@ -38,7 +33,7 @@ jobs:
         id: eval
         if: steps.data.outcome == 'success'
         continue-on-error: true
-        run: python v15/data_scale_benchmark.py --dataset-root /tmp/emps --out v15/results --count 20
+        run: python experiments/v15/data_scale_benchmark.py --dataset-root /tmp/emps --out experiments/v15/results --count 20
       - name: Save evaluation status and illustrated Markdown report
         if: always()
         env:
@@ -52,7 +47,7 @@ jobs:
           if s['evaluation']=='success' and not (p/'results/metrics.json').exists():raise ValueError('Metrics absent after success')
           (p/'status.json').write_text(json.dumps(s,indent=2)+'\n')
           PY
-          python v15/build_report.py
+          python experiments/v15/build_report.py
       - name: Validate all report images and test identities
         run: |
           python - <<'PY'
@@ -71,8 +66,8 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add v15/REPORT.md v15/status.json
-          if [ -d v15/results ]; then git add v15/results/; fi
+          git add experiments/v15/REPORT.md experiments/v15/status.json
+          if [ -d experiments/v15/results ]; then git add experiments/v15/results/; fi
           if ! git diff --cached --quiet; then
             git commit -m 'Record v15 annotated training-scale benchmark [skip ci]'
             git pull --rebase origin main
