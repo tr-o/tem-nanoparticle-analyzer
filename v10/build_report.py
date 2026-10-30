@@ -53,9 +53,36 @@ else:
               '次の画像はデータ取得の代わりになる合成テスト画像ではなく、**過去のDM3実画像での検出例**である。',
               '', '![既存の実DM3のv8粒子候補（GTなし）](../v8/results_hrtem/NP-TEM-Image1/overview.jpg)',
               '', '![別の実DM3のv8粒子候補（GTなし）](../v8/results_hrtem/NP-TEM-Image2/overview.jpg)']
+# EMPS true per-instance labels are an independent public fallback when Dryad 401 blocks binary access.
+emps_metrics=ROOT/'results_emps/metrics.json'
+emps_status=ROOT/'emps_status.json'
+ems=json.loads(emps_status.read_text()) if emps_status.exists() else {}
+lines += ['', '## 3B. EMPS実測TEM/SEM：教師ありRandom Forestと粒子別マスク', '',
+    '出典：[Yildirim & Cole, EMPS](https://github.com/by256/emps) — 465のTEM/SEM画像と、粒子ごとにIDを持つアノテーション。公開MITライセンス。',
+    '', '学習には公式 **train.csv** のみ、評価には **test.csv** のみ使用。異なる撮影モードを含むため、HRTEM専用性能と混同しない。',
+    '', f'データ取得：`{ems.get("acquire","not_run")}` / 評価：`{ems.get("evaluation","not_run")}`。', '']
+if emps_metrics.exists():
+    data=json.loads(emps_metrics.read_text());aggregate=data['aggregate']
+    lines += ['### 正解マスクに対する定量結果', '',
+         f'学習に使用した画像：{len(data["train_images"])}枚。未学習の公式test画像：{len(data["test_files"])}枚。', '',
+         '| 指標 | 結果 |', '|---|---:|',
+         f'| Pixel Dice | {aggregate["pixel"]["dice"]:.3f} |',
+         f'| Pixel IoU | {aggregate["pixel"]["iou"]:.3f} |',
+         f'| 連結成分のPrecision (IoU 0.5) | {aggregate["instance_connected"]["precision"]:.3f} |',
+         f'| 連結成分のRecall (IoU 0.5) | {aggregate["instance_connected"]["recall"]:.3f} |',
+         f'| Watershed分割後Precision (IoU 0.5) | {aggregate["instance_watershed"]["precision"]:.3f} |',
+         f'| Watershed分割後Recall (IoU 0.5) | {aggregate["instance_watershed"]["recall"]:.3f} |',
+         '', '### 実測画像・粒子ごとの正解輪郭・RF予測・確率マップ',
+         '', '**黄＝粒子ID別の正解境界、シアン＝Watershed後の予測境界**。', '']
+    for jpg in sorted((ROOT/'results_emps').glob('*.jpg')):
+        lines += [f'![EMPS {jpg.stem}: 実測画像、人手インスタンスGT、RF予測、確率]({jpg.relative_to(ROOT).as_posix()})','']
+    lines += ['輪郭が不一致の粒子は良好に見える例だけを選ばず含める。スケール情報を確認していないため**粒径誤差はpx単位**で報告。']
+else:
+    lines += ['**実画像・教師あり評価は未完了**。公開GitHubからの取得またはモデル実行が成功していない場合、架空のDiceを報告しない。']
+
 lines += [
  '', '## 4. 評価の限界と今後の改良対象','',
- '1. **画像枚数と独立性:** 今回は最小ペアの固定seedによる最大8パッチ。パッチは同じ取得セッション由来の可能性がある。交差セッションの汎化評価ではない。',
+ '1. **画像枚数と独立性:** Dryad側は最小ペアの固定seedによる最大8パッチ。パッチは同じ取得セッション由来の可能性がある。交差セッションの汎化評価ではない。',
  '2. **連結成分の限界:** 人手のインスタンス別IDがないため、接触して1連結になった粒子は個々の粒子数として判定できない。ここでのinstance指標は連結成分の代理指標。',
  '3. **径の単位:** このH5は処理済みパッチであり、尺度の独立したメタデータ照合をしていないので、直径誤差は**px単位**。元DM3の校正値を勝手に転用しない。',
  '4. **学習への転用:** GTを使って学習する場合は、同一視野や同一撮影セッション由来のパッチがtrain/testに混ざらない分割が必要。**本ベンチマークは学習には使用しない。**',
