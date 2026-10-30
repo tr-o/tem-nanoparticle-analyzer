@@ -42,7 +42,7 @@ jobs:
         run: |
           python - <<'PY'
           import pathlib,json,os
-          p=pathlib.Path('v15')
+          p=pathlib.Path('experiments/v15')
           s={'data':os.environ['DATA_STATE'],'evaluation':os.environ['EVAL_STATE']}
           if s['evaluation']=='success' and not (p/'results/metrics.json').exists():raise ValueError('Metrics absent after success')
           (p/'status.json').write_text(json.dumps(s,indent=2)+'\n')
@@ -52,7 +52,7 @@ jobs:
         run: |
           python - <<'PY'
           import pathlib,re,json
-          p=pathlib.Path('v15');text=(p/'REPORT.md').read_text()
+          p=pathlib.Path('experiments/v15');text=(p/'REPORT.md').read_text()
           for src in re.findall(r'!\[[^\]]*\]\(([^)]+)\)',text): assert (p/src).exists(),src
           status=json.loads((p/'status.json').read_text())
           if status['evaluation']=='success':
