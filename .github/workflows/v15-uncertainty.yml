@@ -17,13 +17,13 @@ jobs:
       - name: Install numpy and matplotlib
         run: pip install numpy matplotlib
       - name: Compute image-level paired bootstrap; produce chart and report
-        run: python scripts/v15_paired_uncertainty.py --metrics experiments/v15/results/metrics.json --outdir v15
+        run: python scripts/v15_paired_uncertainty.py --metrics experiments/v15/results/metrics.json --outdir experiments/v15
       - name: Verify all embedded images
         run: |
           python - <<'PY'
           from pathlib import Path
           import re
-          p=Path('v15');s=(p/'UNCERTAINTY.md').read_text()
+          p=Path('experiments/v15');s=(p/'UNCERTAINTY.md').read_text()
           for q in re.findall(r'!\[[^\]]*\]\(([^)]+)\)',s):assert (p/q).is_file(),q
           PY
       - name: Commit chart and uncertainty report
