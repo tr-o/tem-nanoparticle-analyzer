@@ -1,0 +1,43 @@
+name: Quantify v14 EMPS paired image uncertainty
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/v14_bootstrap_uncertainty.py'
+      - 'scripts/test_v14_bootstrap_uncertainty.py'
+      - '.github/workflows/v14-bootstrap.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  uncertainty:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install plotting dependencies
+        run: pip install numpy matplotlib
+      - name: Execute uncertainty regression tests
+        run: PYTHONPATH=scripts python -m unittest discover -s scripts -p 'test_v14_bootstrap_uncertainty.py' -v
+      - name: Recompute paired image uncertainty and render report
+        run: python scripts/v14_bootstrap_uncertainty.py --metrics v14/results/metrics.json --out v14/results/bootstrap_ci.json --plot v14/results/bootstrap_ci.jpg --report v14/UNCERTAINTY.md
+      - name: Verify embedded images
+        run: |
+          python - <<'PY'
+          import pathlib,re
+          path=pathlib.Path('v14');doc=(path/'UNCERTAINTY.md').read_text()
+          for src in re.findall(r'!\[[^\]]*\]\(([^)]+)\)',doc):assert (path/src).is_file(),src
+          PY
+      - name: Commit uncertainty chart and documentation only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v14/UNCERTAINTY.md v14/results/bootstrap_ci.json v14/results/bootstrap_ci.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m 'Document paired uncertainty of v14 held-out comparison [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
