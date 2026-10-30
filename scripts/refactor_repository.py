@@ -105,14 +105,8 @@ def migrate() -> dict:
         if before != after:
             dest.write_text(after, encoding="utf8")
             rewritten += 1
-    for path in (ROOT / ".github/workflows").glob("*.yml"):
-        if path.name == "repository-quality.yml" or path.name == "refactor-layout.yml":
-            continue
-        before = path.read_text(encoding="utf8")
-        after = rewrite_workflow(before)
-        if before != after:
-            path.write_text(after, encoding="utf8")
-            rewritten += 1
+    # Historical GitHub Actions workflows are updated separately through
+    # the connected GitHub app: an Actions job token cannot rewrite them.
     # Root scripts are stable. Only add the new paths when they reference
     # versioned experiments directly; do not touch comments or binaries.
     for path in (ROOT / "scripts").glob("*.py"):
