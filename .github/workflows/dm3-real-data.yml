@@ -1,10 +1,5 @@
 name: Validate real nanoparticle TEM DM3 images
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'v8/*.py'
-      - '.github/workflows/dm3-real-data.yml'
   workflow_dispatch:
 permissions:
   contents: write
@@ -36,19 +31,19 @@ jobs:
           set -euo pipefail
           for i in 1 2; do
             img="/tmp/antema/NP-TEM-Image${i}.dm3"
-            dest="v8/results/NP-TEM-Image${i}"
-            python v8/inspect_dm.py "$img" --out "${dest}_inspect.json"
-            python v8/analyze_dm.py --image "$img" --dataset-index 0 --model trained_rf.joblib --output "$dest" --max-side 768
+            dest="experiments/v8/results/NP-TEM-Image${i}"
+            python experiments/v8/inspect_dm.py "$img" --out "${dest}_inspect.json"
+            python experiments/v8/analyze_dm.py --image "$img" --dataset-index 0 --model trained_rf.joblib --output "$dest" --max-side 768
           done
-          python v8/build_report.py
+          python experiments/v8/build_report.py
       - name: HRTEM-specific crystalline texture baseline
         run: |
           set -euo pipefail
           for i in 1 2; do
-            python v8/hrtem_texture.py --image "/tmp/antema/NP-TEM-Image${i}.dm3" \
-              --output "v8/results_hrtem/NP-TEM-Image${i}" --max-side 768
+            python experiments/v8/hrtem_texture.py --image "/tmp/antema/NP-TEM-Image${i}.dm3" \
+              --output "experiments/v8/results_hrtem/NP-TEM-Image${i}" --max-side 768
           done
-          python v8/build_hrtem_report.py
+          python experiments/v8/build_hrtem_report.py
       - name: Verify embedded images and json
         run: |
           python - <<'PY'
@@ -66,9 +61,9 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add v8/REPORT.md v8/results/
-          git add v8/HRTEM_EXPERIMENT.md v8/results_hrtem/
-          git add v8/*_inspect.json
+          git add experiments/v8/REPORT.md experiments/v8/results/
+          git add experiments/v8/HRTEM_EXPERIMENT.md experiments/v8/results_hrtem/
+          git add experiments/v8/*_inspect.json
           if git diff --cached --quiet; then
             echo 'Report unchanged'
           else
