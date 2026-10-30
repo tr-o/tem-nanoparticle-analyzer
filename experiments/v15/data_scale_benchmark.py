@@ -14,7 +14,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 ROOT=Path(__file__).resolve().parents[2]
-for p in ('v10','v11','v13','v14'):sys.path.insert(0,str(ROOT/p))
+for p in ('experiments/v10','experiments/v11','experiments/v13','experiments/v14'):sys.path.insert(0,str(ROOT/p))
 from benchmark_emps import (RNG,read_pairs,prepare_image,prepare_instances,fit_model,
                             predict,match_instances,contours)
 from boundary_model import train_boundary,border_prob,split_by_border,metrics_sum,boundary_targets
