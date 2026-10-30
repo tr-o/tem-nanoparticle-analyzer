@@ -53,7 +53,10 @@ def rewrite_python(content: str) -> str:
     # A moved vN/foo.py needs parents[2] to locate the repository root.
     content = content.replace("Path(__file__).resolve().parents[1]",
                               "Path(__file__).resolve().parents[2]")
-    # Root-relative path literals now include experiments/.
+    # Root-relative references such as ROOT/'v10' need the new parent.
+    content = re.sub(r"((?:ROOT|root|base)\s*/\s*['\"])v([1-9]\d*)(?=['\"])",
+                     lambda m: m.group(1) + "experiments/v" + m.group(2), content)
+    # Textual command paths such as python v10/model.py also change.
     return re.sub(r"(?<![a-zA-Z0-9_/])v([1-9]\d*)/", r"experiments/v\1/", content)
 
 
