@@ -10,7 +10,7 @@ from v14_bootstrap_uncertainty import bootstrap
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--metrics',default='v15/results/metrics.json')
+    parser.add_argument('--metrics',default='experiments/v15/results/metrics.json')
     parser.add_argument('--outdir',default='v15')
     args=parser.parse_args()
     folder=Path(args.outdir);d=json.loads(Path(args.metrics).read_text())

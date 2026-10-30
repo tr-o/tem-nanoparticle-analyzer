@@ -1,8 +1,8 @@
-**[最新v8：公開DM3の元画像解析・nm校正・HRTEM適応実験（画像12点）](../v8/INDEX.md)**
+**[最新v8：公開DM3の元画像解析・nm校正・HRTEM適応実験（画像12点）](../experiments/v8/INDEX.md)**
 
 # TEMナノ粒子粒径解析 — 統合研究レポート
 
-**[最新v5：高密度Ptの過剰除外監査・36候補画像・再審査ワークフロー](../v5/REPORT.md)**
+**[最新v5：高密度Ptの過剰除外監査・36候補画像・再審査ワークフロー](../experiments/v5/REPORT.md)**
 
 
 > **2026-10-28 | v1 → v2 → v3.1 | 実験TEM 6視野 + 模擬TEM 20視野**  
@@ -13,7 +13,7 @@
 
 **6枚の実験TEMに同じ解析パイプラインを適用した比較**。これらは論文の粒径値との一致を目的にしていません。
 
-![6枚のPt/Ag TEMに対する改良版の解析比較。各視野の粒子輪郭・検出状況](../v2/comparison_6_images.jpg)
+![6枚のPt/Ag TEMに対する改良版の解析比較。各視野の粒子輪郭・検出状況](../experiments/v2/comparison_6_images.jpg)
 
 - **孤立Ag粒子**：v3.1（15-tree軽量モデル）で49候補を採用し、OCR + スケールバーから得た **0.435 nm/px** で換算。円相当径の中央値 **11.40 nm**。
 - **背景が非常にざらつくAg粒子**：旧モデルの1,148候補に対し、v2では6候補採用。これは**同じ画像を弱教師学習にも利用した結果**なので、未知画像での性能改善を証明しない。
@@ -65,15 +65,15 @@ v1の初期試験は画素Dice ≈0.913、IoU ≈0.839、粒子中心のPrecisio
 
 #### Ag・孤立粒子の補助ラベル
 
-![Ag孤立粒子の元像と弱教師ラベルプレビュー](../v2/weak_labels/ag_isolated/label_preview.jpg)
+![Ag孤立粒子の元像と弱教師ラベルプレビュー](../experiments/v2/weak_labels/ag_isolated/label_preview.jpg)
 
 #### Ag・複雑な背景の補助ラベル
 
-![Agノイズの大きな画像の弱教師ラベルプレビュー](../v2/weak_labels/ag_noisy/label_preview.jpg)
+![Agノイズの大きな画像の弱教師ラベルプレビュー](../experiments/v2/weak_labels/ag_noisy/label_preview.jpg)
 
 #### Pt・中密度の補助ラベル
 
-![Pt中密度画像の弱教師ラベルプレビュー](../v2/weak_labels/pt_semi_dense/label_preview.jpg)
+![Pt中密度画像の弱教師ラベルプレビュー](../experiments/v2/weak_labels/pt_semi_dense/label_preview.jpg)
 
 実画像の取得元：[nanoComposix Pt 5 nm](https://nanocomposix.com/products/5-nm-platinum-nanoparticles) / [nanoComposix Ag 10 nm](https://nanocomposix.com/products/10-nm-silver-nanospheres)。**これらの製品ページ記載の公称粒径は学習ラベルにも検量にも使用していない。** 外部画像の再配布権・元の16-bit TEMデータへのアクセスは本プロジェクトから保証されない。
 
@@ -94,37 +94,37 @@ v1の初期試験は画素Dice ≈0.913、IoU ≈0.839、粒子中心のPrecisio
 
 ### 3.1 Pt-1：密集が最も難しい例
 
-![Pt-1：密集粒子のv2輪郭と粒径ヒストグラム](../v2/results/web_image_2bed876c2a14_500/overview.jpg)
+![Pt-1：密集粒子のv2輪郭と粒径ヒストグラム](../experiments/v2/results/web_image_2bed876c2a14_500/overview.jpg)
 
 輪郭の広い連結塊が残りやすい。v2は459候補のうち40（接触分離4を含む）しか採用せず、**過剰除外の可能性**が大きい。PoCの実用域では未解決。
 
 ### 3.2 Pt-2：弱教師に使った中密度例
 
-![Pt-2：中密度のPt粒子のv2輪郭と粒径ヒストグラム](../v2/results/web_image_9828c4ba32bc_500/overview.jpg)
+![Pt-2：中密度のPt粒子のv2輪郭と粒径ヒストグラム](../experiments/v2/results/web_image_9828c4ba32bc_500/overview.jpg)
 
 接触分離は部分的に機能。**学習にも使った視野**なので汎化の根拠にはしない。
 
 ### 3.3 Pt-3：学習に使っていないPt視野
 
-![Pt-3：未学習Pt視野のv2輪郭と粒径ヒストグラム](../v2/results/web_image_6af295ebd363_500/overview.jpg)
+![Pt-3：未学習Pt視野のv2輪郭と粒径ヒストグラム](../experiments/v2/results/web_image_6af295ebd363_500/overview.jpg)
 
 比較的多くの候補を採用するが、真の境界が不明な凝集の判定には引き続き課題。
 
 ### 3.4 Ag-1：孤立粒子
 
-![Ag-1：孤立Ag粒子のv2輪郭と粒径ヒストグラム](../v2/results/web_image_b9ecc5092cc1_500/overview.jpg)
+![Ag-1：孤立Ag粒子のv2輪郭と粒径ヒストグラム](../experiments/v2/results/web_image_b9ecc5092cc1_500/overview.jpg)
 
 最も自然な抽出例。ただし**弱教師で使用**。
 
 ### 3.5 Ag-2：背景ノイズの強い失敗例を改善
 
-![Ag-2：ノイズの大きいAg視野のv2輪郭と粒径ヒストグラム](../v2/results/web_image_82853817b188_500/overview.jpg)
+![Ag-2：ノイズの大きいAg視野のv2輪郭と粒径ヒストグラム](../experiments/v2/results/web_image_82853817b188_500/overview.jpg)
 
 v1は背景を大量に拾う。v2は目視で確認しやすい粒子を中心に採用。**同じ視野の補助ラベルを与えた結果であり、独立評価ではない。**
 
 ### 3.6 Ag-3：少数の粒子と接触
 
-![Ag-3：接触粒子を含むAg視野のv2輪郭と粒径ヒストグラム](../v2/results/web_image_8222294b2379_500/overview.jpg)
+![Ag-3：接触粒子を含むAg視野のv2輪郭と粒径ヒストグラム](../experiments/v2/results/web_image_8222294b2379_500/overview.jpg)
 
 12候補を採用、うち4候補は接触分離による。軽い接触は処理できるが分離正解率は未測定。
 
@@ -140,7 +140,7 @@ v1は背景を大量に拾う。v2は目視で確認しやすい粒子を中心�
 
 **スケール検出診断：緑がバー、橙が除外する注記領域**
 
-![Pt・Ag 6視野のOCR結果、スケールバー検出、スケール注記除外マスク](../v2/calibration_6_images.jpg)
+![Pt・Ag 6視野のOCR結果、スケールバー検出、スケール注記除外マスク](../experiments/v2/calibration_6_images.jpg)
 
 ### 4.1 同じ視野の高解像度1000 px画像から検量した結果
 
@@ -161,11 +161,11 @@ v1は背景を大量に拾う。v2は目視で確認しやすい粒子を中心�
 
 **Pt-2：採用346候補（孤立283 + 接触分離63）、円相当径中央値 3.80 nm**
 
-![Pt-2：スケール注記を除外した輪郭図とnm単位の粒径分布](../v2/results_v3/Pt_reference/overview.jpg)
+![Pt-2：スケール注記を除外した輪郭図とnm単位の粒径分布](../experiments/v2/results_v3/Pt_reference/overview.jpg)
 
 **Ag-1：採用49候補、円相当径中央値 11.40 nm**
 
-![Ag-1：スケール注記を除外した輪郭図とnm単位の粒径分布](../v2/results_v3/Ag_isolated/overview.jpg)
+![Ag-1：スケール注記を除外した輪郭図とnm単位の粒径分布](../experiments/v2/results_v3/Ag_isolated/overview.jpg)
 
 モデルがv2表の48-treeと異なるため、**v2件数とv3.1件数の差をスケール機能だけの効果として解釈しない**。どちらの中央値も、専門家ラベルとの照合なしに粒径精度が保証されたものではない。
 
@@ -244,20 +244,20 @@ python v2/app_v3.py
 
 - [模擬教師データと再現方法](TRAINING_DATA.md)
 - [初版の解析手法](METHODS.md)
-- [v2の実画像比較記録](../v2/REPORT.md)
-- [v3のスケール検量詳細](../v2/SCALE_CALIBRATION.md)
-- [実行・学習・GUIの手順](../v2/README_GITHUB.md)
-- [再現性チェック結果](../v2/checks.json)
+- [v2の実画像比較記録](../experiments/v2/REPORT.md)
+- [v3のスケール検量詳細](../experiments/v2/SCALE_CALIBRATION.md)
+- [実行・学習・GUIの手順](../experiments/v2/README_GITHUB.md)
+- [再現性チェック結果](../experiments/v2/checks.json)
 
 **この統合レポートを更新時の入口とし、過去バージョンのレポートは履歴・再現性を追跡する資料として残す。**
 
 
 ## v4：過剰除外の再評価（2026-10-28）
 
-**[📊 v4画像付き詳細レポート：Pt・Ag実画像6視野のv3.1/v4比較、採用・要確認・除外の色分け](../v4/REPORT.md)**
+**[📊 v4画像付き詳細レポート：Pt・Ag実画像6視野のv3.1/v4比較、採用・要確認・除外の色分け](../experiments/v4/REPORT.md)**
 
-![v4の実画像6視野の採否マップ](../v4/docs/v4_all_six_audit.jpg)
+![v4の実画像6視野の採否マップ](../experiments/v4/docs/v4_all_six_audit.jpg)
 
-![高密度Ptの拡大比較](../v4/docs/pt1_zoom_audit.jpg)
+![高密度Ptの拡大比較](../experiments/v4/docs/pt1_zoom_audit.jpg)
 
 高密度Ptで自動採用候補34→192。v4は **緑：孤立採用／シアン：接触分離採用／紫：再分離採用／橙：要確認／赤：除外** の5種類を保存します。橙は粒径統計から除きます。v4は校正済みスケールバー処理を継承し、短いPt-1バーではnm換算を保留します。人工生成TEM4枚（328中心）の対応検出はv3.1が171、v4が172。**実測TEMの人手正解との照合は未実施のため、採用数の増加＝精度向上ではありません**。

@@ -28,7 +28,7 @@ def bootstrap(rows,old='v13',new='v14',iterations=10000,seed=20261030,return_dis
     return (summary,diffs) if return_distribution else summary
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--metrics',default='v14/results/metrics.json');p.add_argument('--out',default='v14/results/bootstrap_ci.json');p.add_argument('--plot',default='v14/results/bootstrap_ci.jpg');p.add_argument('--report',default='v14/UNCERTAINTY.md')
+    p=argparse.ArgumentParser();p.add_argument('--metrics',default='experiments/v14/results/metrics.json');p.add_argument('--out',default='experiments/v14/results/bootstrap_ci.json');p.add_argument('--plot',default='experiments/v14/results/bootstrap_ci.jpg');p.add_argument('--report',default='experiments/v14/UNCERTAINTY.md')
     args=p.parse_args();d=json.loads(Path(args.metrics).read_text());out,draws=bootstrap(d['per_image'],return_distribution=True)
     Path(args.out).parent.mkdir(parents=True,exist_ok=True)
     Path(args.out).write_text(json.dumps(out,indent=2)+'\n')
