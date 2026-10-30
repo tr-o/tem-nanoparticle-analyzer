@@ -1,16 +1,7 @@
 name: Reproduce and commit synthetic TEM dataset
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "tem_particle_ml.py"
-      - "run_demo.py"
-      - "requirements.txt"
-      - "scripts/**"
-      - ".github/workflows/build-demo.yml"
   workflow_dispatch:
-
 permissions:
   contents: write
 
