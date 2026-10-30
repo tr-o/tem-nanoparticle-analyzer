@@ -1,0 +1,79 @@
+name: v10 real Au nanoparticle HRTEM human-GT benchmark
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v10/**.py'
+      - '.github/workflows/v10-real-gt.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  gt-benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install image-science dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install h5py requests
+      - name: Run fail-closed unit tests on image/mask pairing and geometry
+        run: |
+          PYTHONPATH=v10 python -m unittest discover -s v10 -p 'test_v10.py' -v
+      - name: Resolve published version and download exact Au images and human GT
+        id: download
+        continue-on-error: true
+        run: |
+          python v10/fetch_dataset.py --out /tmp/lbnl
+      - name: Verify paired data and run 8-patch v8/v9 benchmark
+        id: benchmark
+        if: steps.download.outcome == 'success'
+        continue-on-error: true
+        run: |
+          python v10/benchmark.py \
+             --images /tmp/lbnl/Au_5nm_260kx_450e_Std_UTC_FFCorr_Team05_Images.h5 \
+             --labels /tmp/lbnl/Au_5nm_260kx_450e_Std_UTC_FFCorr_Team05_Labels.h5 \
+             --out v10/results_human --count 8
+      - name: Report exact completion and embed real figures if available
+        env:
+          FETCH_STATE: ${{ steps.download.outcome }}
+          BENCH_STATE: ${{ steps.benchmark.outcome }}
+        run: |
+          python - <<'PY'
+          import os,json,pathlib
+          root=pathlib.Path('v10')
+          success=(root/'results_human/metrics.json').exists()
+          state={'download':os.environ['FETCH_STATE'],'integrity':'success' if os.environ['FETCH_STATE']=='success' else 'not_verified',
+                 'benchmark':os.environ.get('BENCH_STATE','skipped'),'real_gt_metrics_available':success}
+          (root/'eval_status.json').write_text(json.dumps(state,indent=2))
+          PY
+          python v10/build_report.py
+      - name: Check Markdown embedded images exist in repository
+        run: |
+          python - <<'PY'
+          import pathlib,re
+          base=pathlib.Path('v10');doc=(base/'REPORT.md').read_text()
+          for rel in re.findall(r'!\[[^]]*\]\(([^)]+)\)',doc):
+              p=base/rel
+              assert p.is_file(), f'Image link missing: {p}'
+          PY
+      - name: Commit report, measures and non-original previews only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v10/REPORT.md v10/eval_status.json
+          if [ -d v10/results_human ]; then git add v10/results_human; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record reproducible real-HRTEM GT benchmark with inlined figures [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
