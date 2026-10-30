@@ -2,7 +2,7 @@ import tempfile,unittest
 from pathlib import Path
 import numpy as np
 from PIL import Image
-from benchmark_emps import match_instances,watersplit,features,prepare_instances,pixel_score,read_pairs
+from benchmark_emps import match_instances,watersplit,features,prepare_instances,pixel_score,read_pairs,robust
 
 class EMPSBench(unittest.TestCase):
     def test_instance_matching_preserves_ids(self):
@@ -21,6 +21,10 @@ class EMPSBench(unittest.TestCase):
         p=np.zeros_like(g);p[35:50,35:50]=1
         s=match_instances(p,g);self.assertEqual(s['tp'],0)
         self.assertEqual(s['fp'],1)
+    def test_robust_normalize_float32_under_numpy2(self):
+        a=np.arange(1024,dtype=np.uint16).reshape(32,32)
+        x=robust(a);self.assertEqual(x.dtype,np.float32)
+        self.assertTrue(np.isfinite(features(x)).all())
     def test_features_shape_and_no_nan(self):
         a=np.ones((64,64),np.float32)/2
         f=features(a);self.assertEqual(f.shape,(64,64,14));self.assertTrue(np.isfinite(f).all())
