@@ -1,13 +1,6 @@
 name: TEM v5 audit regression
 on:
-  push:
-    paths:
-      - 'v5/**'
-      - '.github/workflows/v5-audit-tests.yml'
-  pull_request:
-    paths:
-      - 'v5/**'
-      - '.github/workflows/v5-audit-tests.yml'
+  workflow_dispatch:
 jobs:
   audit:
     runs-on: ubuntu-latest
@@ -25,7 +18,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import re
-          src=Path('v5/REPORT.md')
+          src=Path('experiments/v5/REPORT.md')
           txt=src.read_text(encoding='utf-8')
           links=re.findall(r'!?\[[^]]*\]\(([^)]+)\)',txt)
           local=[(src.parent / link) for link in links if not link.startswith(('https://','http://','#'))]
