@@ -59,17 +59,20 @@ def audit():
     unpictured = sorted(illustrations - embedded)
     legacy_at_root = sorted(p.name for p in ROOT.iterdir()
                             if p.is_dir() and VERSION.fullmatch(p.name))
+    unstructured_root = sorted(p for p in tracked if '/' not in p and Path(p).suffix in {'.py', '.joblib', '.json'})
     print(f"tracked: {len(paths)} | images: {len(illustrations)} | "
           f"embedded: {len(embedded)} | markdown: {len(markdowns)}")
     print(f"not embedded: {len(unpictured)} | broken links: {len(missing)} "
-          f"| legacy dirs at root: {len(legacy_at_root)}")
+          f"| legacy dirs at root: {len(legacy_at_root)} | root code/model files: {len(unstructured_root)}")
     for p in unpictured[:50]:
         print("IMAGE_NOT_IN_MARKDOWN:", p)
     for md, url, resolved in missing[:60]:
         print("BROKEN_LINK:", md, "=>", url, "resolved:", resolved)
     for p in legacy_at_root:
         print("ROOT_LEGACY_DIRECTORY:", p)
-    if missing or unpictured or legacy_at_root:
+    for p in unstructured_root:
+        print("STRAY_ROOT_CODE_OR_MODEL:", p)
+    if missing or unpictured or legacy_at_root or unstructured_root:
         raise SystemExit(1)
     print("OK: Every tracked image is embedded and every local Markdown link resolves.")
 
