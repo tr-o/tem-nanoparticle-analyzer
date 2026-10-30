@@ -1,0 +1,49 @@
+name: One-time repository layout migration
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/refactor_repository.py'
+      - '.github/workflows/refactor-layout.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: tem-repository-migration
+  cancel-in-progress: false
+jobs:
+  reorganize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Preserve experiments, rewrite references and build exhaustive image atlas
+        run: python scripts/refactor_repository.py
+      - name: Stage all moves so link and image index checks see final paths
+        run: git add -A
+      - name: Verify every figure and relative Markdown path
+        run: python scripts/check_repository.py
+      - name: Compile relocated source
+        run: python -m compileall -q tem_analyzer experiments scripts
+      - name: Verify executable entry points and scientific utility tests
+        run: |
+          python -m pip install -r requirements.txt
+          python -m unittest discover -s tests -v
+          PYTHONPATH=experiments/v8 python -m unittest discover -s experiments/v8 -p test_dm_io.py -v
+          PYTHONPATH=experiments/v13 python -m unittest discover -s experiments/v13 -p test_v13.py -v
+      - name: Commit layout migration without deleting any figure
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git diff --cached --quiet; then echo 'Already migrated'; exit 0; fi
+          git commit -m 'Refactor: archive experiment history, restore links and embed every figure [skip ci]'
+          git pull --rebase origin main
+          git push origin HEAD:main
