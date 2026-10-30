@@ -19,9 +19,9 @@
 
 | ステップ | 状態 |
 |---|---|
-| 公開データ取得 | `not_run` |
-| HDF5とSHA-256検証 | `unknown` |
-| 人手GTによる評価 | `not_run` |
+| 公開データ取得 | `failure` |
+| HDF5とSHA-256検証 | `not_verified` |
+| 人手GTによる評価 | `skipped` |
 
 ## 3. 実測GTベンチマーク
 
