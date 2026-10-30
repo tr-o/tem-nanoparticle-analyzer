@@ -13,7 +13,7 @@ from skimage import measure
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'v10'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'experiments/v10'))
 from benchmark_emps import (read_pairs,prepare_image,prepare_instances,fit_model,predict,
      match_instances,pixel_score,watersplit,contours,RNG)
 
